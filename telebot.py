@@ -16,11 +16,11 @@ RETURN_NAME = 4
 keys_dict = {0: None, 1:"Keypress", 2:"Keypress", 3:"Keypress", 4:"Keypress", 5:"Keypress"}
 #End of variable declaration
 
-
+# DONE
 # /start command
 def start(update, context):
     first_name = update.message.chat.first_name
-    update.message.reply_text("Hi %s, nice to meet you!" % first_name)
+    update.message.reply_text("Hello %s, nice to meet you and welcome to dissney mama shop!" % first_name)
     update.message.reply_text("Here are the commands:" + "\n\n" +
                               "/product     - View available products " + "\n" +
                               "/cart        - View shopping cart" + "\n" +
@@ -29,7 +29,7 @@ def start(update, context):
                               "/promo       - View promotional item" + "\n" + 
                               "/help        - View available help ")
                               
-
+# DONE
 # /help command
 def help(update, context):
     update.message.reply_text("Here are the commands:" + "\n\n" +
@@ -39,25 +39,84 @@ def help(update, context):
                               "/profile     - User profile" + "\n" +
                               "/promo       - View promotional item" + "\n" + 
                               "/help        - View available help ")
-    user_id = update.message.from_user['id']
-    user_name = update.message.from_user['username']
-    mention = "["+user_name+"](tg://user?id="+str(user_id)+")"
-    update.message.reply_text("If you require additional assistance, you can contact us at %s!" % mention)
+    update.message.reply_text("If you require additional assistance, you can contact us at @darrennnnnlim, @kendricklee or @yongkhengs!")
 
 
 # /product command
 def product(update, context):
-    update.message.reply_text("You have landed at the product page!" + "\n\n" +
-                                "/view    - Use this command to view the current location of keys." + "\n" + 
-                                "/draw    - Use this command to draw keys from people or from the key press." + "\n" + 
-                                "/return  - Use this command to return key to keypress." + "\n\n" +
-                                "Key Information" + "\n\n" +
-                                "Key ID 1 - Audit 1" + "\n" +
-                                "Key ID 2 - Audit 2" + "\n" +
-                                "Key ID 3 - MPH" + "\n" +
-                                "Key ID 4 - PLR 1" + "\n" +
-                                "Key ID 5 - PLR4")                      
+    update.message.reply_text("You have landed at the product page!")
+    update.message.reply_text("This page is still under development!")
+    # update.message.reply_text("You have landed at the cart page!" + "\n\n" +
+    #                             "/view    - Use this command to view the current location of keys." + "\n" + 
+    #                             "/draw    - Use this command to draw keys from people or from the key press." + "\n" + 
+    #                             "/return  - Use this command to return key to keypress." + "\n\n" +
+    #                             "Key Information" + "\n\n" +
+    #                             "Key ID 1 - Audit 1" + "\n" +
+    #                             "Key ID 2 - Audit 2" + "\n" +
+    #                             "Key ID 3 - MPH" + "\n" +
+    #                             "Key ID 4 - PLR 1" + "\n" +
+    #                             "Key ID 5 - PLR4")                     
     
+# /cart command
+def cart(update, context):
+    update.message.reply_text("You have landed at the cart page!")
+    update.message.reply_text("This page is still under development!")
+    # update.message.reply_text("You have landed at the cart page!" + "\n\n" +
+    #                             "/view    - Use this command to view the current location of keys." + "\n" + 
+    #                             "/draw    - Use this command to draw keys from people or from the key press." + "\n" + 
+    #                             "/return  - Use this command to return key to keypress." + "\n\n" +
+    #                             "Key Information" + "\n\n" +
+    #                             "Key ID 1 - Audit 1" + "\n" +
+    #                             "Key ID 2 - Audit 2" + "\n" +
+    #                             "Key ID 3 - MPH" + "\n" +
+    #                             "Key ID 4 - PLR 1" + "\n" +
+    #                             "Key ID 5 - PLR4")   
+
+# /checkout command
+def checkout(update, context):
+    update.message.reply_text("You have landed at the checkout page!")
+    update.message.reply_text("This page is still under development!")
+    # update.message.reply_text("You have landed at the cart page!" + "\n\n" +
+    #                             "/view    - Use this command to view the current location of keys." + "\n" + 
+    #                             "/draw    - Use this command to draw keys from people or from the key press." + "\n" + 
+    #                             "/return  - Use this command to return key to keypress." + "\n\n" +
+    #                             "Key Information" + "\n\n" +
+    #                             "Key ID 1 - Audit 1" + "\n" +
+    #                             "Key ID 2 - Audit 2" + "\n" +
+    #                             "Key ID 3 - MPH" + "\n" +
+    #                             "Key ID 4 - PLR 1" + "\n" +
+    #                             "Key ID 5 - PLR4")   
+
+# /profile command
+def profile(update, context):
+    update.message.reply_text("You have landed at the profile page!")
+    update.message.reply_text("This page is still under development!")
+    # update.message.reply_text("You have landed at the cart page!" + "\n\n" +
+    #                             "/view    - Use this command to view the current location of keys." + "\n" + 
+    #                             "/draw    - Use this command to draw keys from people or from the key press." + "\n" + 
+    #                             "/return  - Use this command to return key to keypress." + "\n\n" +
+    #                             "Key Information" + "\n\n" +
+    #                             "Key ID 1 - Audit 1" + "\n" +
+    #                             "Key ID 2 - Audit 2" + "\n" +
+    #                             "Key ID 3 - MPH" + "\n" +
+    #                             "Key ID 4 - PLR 1" + "\n" +
+    #                             "Key ID 5 - PLR4")   
+
+# /promo command
+def promo(update, context):
+    update.message.reply_text("You have landed at the promo page!")
+    update.message.reply_text("This page is still under development!")
+    # update.message.reply_text("You have landed at the cart page!" + "\n\n" +
+    #                             "/view    - Use this command to view the current location of keys." + "\n" + 
+    #                             "/draw    - Use this command to draw keys from people or from the key press." + "\n" + 
+    #                             "/return  - Use this command to return key to keypress." + "\n\n" +
+    #                             "Key Information" + "\n\n" +
+    #                             "Key ID 1 - Audit 1" + "\n" +
+    #                             "Key ID 2 - Audit 2" + "\n" +
+    #                             "Key ID 3 - MPH" + "\n" +
+    #                             "Key ID 4 - PLR 1" + "\n" +
+    #                             "Key ID 5 - PLR4")   
+
 # Error message displayed to user
 def error(update, context):
     update.message.reply_text('An error has occured')
@@ -203,9 +262,10 @@ def main():
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help))
     dispatcher.add_handler(CommandHandler("product", product))
-    dispatcher.add_handler(CommandHandler("draw", draw_keys))
-    dispatcher.add_handler(CommandHandler("view", view_keys))
-    dispatcher.add_handler(CommandHandler("return", return_keys))
+    dispatcher.add_handler(CommandHandler("cart", cart))
+    dispatcher.add_handler(CommandHandler("checkout", checkout))
+    dispatcher.add_handler(CommandHandler("profile", profile))
+    dispatcher.add_handler(CommandHandler("promo", promo))
     
     # add an handler for normal text (not commands)
     dispatcher.add_handler(MessageHandler(Filters.text, text))
