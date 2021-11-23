@@ -16,25 +16,8 @@ RETURN_NAME = 4
 #keys_dict = {'key':'Name + ',' + Date'}
 #Future implementation to store this information in cloud
 keys_dict = {0: None, 1:"Keypress", 2:"Keypress", 3:"Keypress", 4:"Keypress", 5:"Keypress"}
-#End of variable declaration
 
-# DONE
-# /start command
-# def start(update, context):
-#     first_name = update.message.chat.first_name
-#     update.message.reply_text("Hello %s, nice to meet you and welcome to dissney mama shop!" % first_name)
-#     update.message.reply_text("Here are the commands:" + "\n\n" +
-#                               "/product     - View available products " + "\n" +
-#                               "/cart        - View shopping cart" + "\n" +
-#                               "/checkout    - Cart checkout" + "\n" +
-#                               "/profile     - User profile" + "\n" +
-#                               "/promo       - View promotional item" + "\n" + 
-#                               "/help        - View available help ")
-
-def start(update: Update, context: CallbackContext):
-    first_name = update.message.chat.first_name
-    """Sends a message with three inline buttons attached."""
-    keyboard = [
+startkeyboard = [
         [
             InlineKeyboardButton("Product", callback_data='product'),
             InlineKeyboardButton("Cart", callback_data='cart'),
@@ -47,14 +30,31 @@ def start(update: Update, context: CallbackContext):
             InlineKeyboardButton("Help", callback_data='help'),
         ],
     ]
+helpkeyboard = [
+        [
+            InlineKeyboardButton("Product", callback_data='product'),
+            InlineKeyboardButton("Cart", callback_data='cart'),
+        ],
+        [
+            InlineKeyboardButton("Checkout", callback_data='checkout'),
+            InlineKeyboardButton("Profile", callback_data='profile'),
+        ],[
+            InlineKeyboardButton("Promo", callback_data='promo')
+        ],
+    ]
+#End of variable declaration
 
-    reply_markup = InlineKeyboardMarkup(keyboard)
+# DONE
+# /start command
+def start(update: Update, context: CallbackContext):
+    first_name = update.message.chat.first_name
+
+    reply_markup = InlineKeyboardMarkup(startkeyboard)
     update.message.reply_text("Hello %s, nice to meet you and welcome to dissney mama shop!" % first_name)
     update.message.reply_text('Please choose:', reply_markup=reply_markup)
 
-
+# Buttoon for callbackquery on inline button
 def button(update: Update, context: CallbackContext):
-    """Parses the CallbackQuery and updates the message text."""
     query = update.callback_query
 
     # CallbackQueries need to be answered, even if no notification to the user is needed
@@ -78,15 +78,16 @@ def button(update: Update, context: CallbackContext):
 # /help command
 def help(update, context):
     query = update.callback_query
-    query.edit_message_text(text=f"Selected option: Help")
+    reply_markup = InlineKeyboardMarkup(helpkeyboard)
+
     query.edit_message_text("Here are the commands:" + "\n\n" +
-                              "/product     - View available products " + "\n" +
-                              "/cart        - View shopping cart" + "\n" +
-                              "/checkout    - Cart checkout" + "\n" +
-                              "/profile     - User profile" + "\n" +
-                              "/promo       - View promotional item" + "\n" + 
-                              "/help        - View available help " + "\n\n" +
-                              "If you require additional assistance, you can contact us at @darrennnnnlim, @kendricklee or @yongkhengs!")
+                              "Product     - View available products " + "\n" +
+                              "Cart        - View shopping cart" + "\n" +
+                              "Checkout    - Cart checkout" + "\n" +
+                              "Profile     - User profile" + "\n" +
+                              "Promo       - View promotional item" + "\n" + 
+                              "Help        - View available help " + "\n\n" +
+                              "If you require additional assistance, you can contact us at @darrennnnnlim, @kendricklee or @yongkhengs!", reply_markup=reply_markup)
 
 # /product command
 def product(update, context):
