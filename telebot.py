@@ -71,22 +71,22 @@ def button(update: Update, context: CallbackContext):
         query.edit_message_text(text=f"Selected option: Profile")
     elif query.data == "promo":
         query.edit_message_text(text=f"Selected option: Promo")
-    elif query == "help":
-        # query.edit_message_text(text=f"Selected option: Help")
+    elif query.data == "help":
         help(update, context)
 
 # DONE
 # /help command
 def help(update, context):
-    update.message.reply_text("Here are the commands:" + "\n\n" +
+    query = update.callback_query
+    query.edit_message_text(text=f"Selected option: Help")
+    query.edit_message_text("Here are the commands:" + "\n\n" +
                               "/product     - View available products " + "\n" +
                               "/cart        - View shopping cart" + "\n" +
                               "/checkout    - Cart checkout" + "\n" +
                               "/profile     - User profile" + "\n" +
                               "/promo       - View promotional item" + "\n" + 
-                              "/help        - View available help ")
-    update.message.reply_text("If you require additional assistance, you can contact us at @darrennnnnlim, @kendricklee or @yongkhengs!")
-
+                              "/help        - View available help " + "\n\n" +
+                              "If you require additional assistance, you can contact us at @darrennnnnlim, @kendricklee or @yongkhengs!")
 
 # /product command
 def product(update, context):
