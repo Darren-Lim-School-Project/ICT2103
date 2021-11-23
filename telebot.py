@@ -301,7 +301,7 @@ def view_keys(update, context):
 # THIS IS THE PART THAT LINK THE COMMANDS TO THE FUNCTION
 def main():
     #Change TOKEN here
-    TOKEN = "2132985175:AAEMPGwqmVmki5okwnzoonFti0XN5NlT4UA"
+    TOKEN = "2140713559:AAFunBF0TFdivjUeskd1TLNtKwwfhT_bnIE"
 
     # create the updater, that will automatically create also a dispatcher and a queue to 
     # make them dialoge
