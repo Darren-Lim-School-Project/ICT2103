@@ -2,7 +2,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 import telegram
 from datetime import datetime
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ParseMode
 
 #Variable Declaration
 STATE = None
@@ -33,14 +33,27 @@ startkeyboard = [
 
 helpkeyboard = [
         [
-            InlineKeyboardButton("Profile", callback_data='Profile'),
-            InlineKeyboardButton("Product", callback_data='Product'),
+            InlineKeyboardButton("Profile", callback_data='profile'),
+            InlineKeyboardButton("Product", callback_data='product'),
         ],
         [
             InlineKeyboardButton("Cart", callback_data='cart'),
-            InlineKeyboardButton("Checkout", callback_data='Checkout'),
+            InlineKeyboardButton("Checkout", callback_data='checkout'),
         ],[
             InlineKeyboardButton("Promo", callback_data='promo')
+        ],
+    ]
+
+profilekeyboard = [
+        [
+            InlineKeyboardButton("Update Email Address", callback_data='email'),
+            InlineKeyboardButton("Cart", callback_data='cart'),
+        ],
+        [
+            InlineKeyboardButton("Checkout", callback_data='checkout'),
+            InlineKeyboardButton("Promo", callback_data='promo'),
+        ],[
+            InlineKeyboardButton("Help", callback_data='help')
         ],
     ]
 #End of variable declaration
@@ -59,47 +72,42 @@ def button(update: Update, context: CallbackContext):
     # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
     query.answer()
 
-    if query.data == "product":
-        query.edit_message_text(text=f"Selected option: Product")
+    if query.data == "profile":
+        profile(update, context)
     elif query.data == "cart":
         query.edit_message_text(text=f"Selected option: Cart")
     elif query.data == "checkout":
         query.edit_message_text(text=f"Selected option: Checkout")
-    elif query.data == "profile":
-        query.edit_message_text(text=f"Selected option: Profile")
+    elif query.data == "product":
+        query.edit_message_text(text=f"Selected option: Product")
     elif query.data == "promo":
         query.edit_message_text(text=f"Selected option: Promo")
     elif query.data == "help":
         help(update, context)
+    elif query.data == "email":
+        query.edit_message_text(text=f"Selected option: Update email")
+
 
 # /help command
 def help(update, context):
     query = update.callback_query
     reply_markup = InlineKeyboardMarkup(helpkeyboard)
 
-    query.edit_message_text("Here are the commands:" + "\n\n" +
-                              "Product     - View available products " + "\n" +
-                              "Cart        - View shopping cart" + "\n" +
-                              "Checkout    - Cart checkout" + "\n" +
-                              "Profile     - User profile" + "\n" +
-                              "Promo       - View promotional item" + "\n" + 
-                              "Help        - View available help " + "\n\n" +
-                              "If you require additional assistance, you can contact us at @darrennnnnlim, @kendricklee or @yongkhengs!", reply_markup=reply_markup)
+    query.edit_message_text("*Help:*" + "\n" +
+                              "Product     \- View available products " + "\n" +
+                              "Cart        \- View shopping cart" + "\n" +
+                              "Checkout    \- Cart checkout" + "\n" +
+                              "Profile     \- User profile" + "\n" +
+                              "Promo       \- View promotional item" + "\n\n" + 
+                              "If you require additional assistance, you can contact us at @darrennnnnlim, @kendricklee or @yongkhengs\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
 
-# /product command
-def product(update, context):
-    update.message.reply_text("You have landed at the product page!")
-    update.message.reply_text("This page is still under development!")
-    # update.message.reply_text("You have landed at the cart page!" + "\n\n" +
-    #                             "/view    - Use this command to view the current location of keys." + "\n" + 
-    #                             "/draw    - Use this command to draw keys from people or from the key press." + "\n" + 
-    #                             "/return  - Use this command to return key to keypress." + "\n\n" +
-    #                             "Key Information" + "\n\n" +
-    #                             "Key ID 1 - Audit 1" + "\n" +
-    #                             "Key ID 2 - Audit 2" + "\n" +
-    #                             "Key ID 3 - MPH" + "\n" +
-    #                             "Key ID 4 - PLR 1" + "\n" +
-    #                             "Key ID 5 - PLR4")                     
+# /profile command
+def profile(update, context):
+    query = update.callback_query
+    reply_markup = InlineKeyboardMarkup(profilekeyboard) # to change keyboard
+
+    query.edit_message_text("*Profile:*" + "\n" +
+                              "Some profile description thingyyyyyyyyyyyyyyyyyyyyyyyyyyy" , parse_mode='MarkdownV2', reply_markup=reply_markup)                     
     
 # /cart command
 def cart(update, context):
@@ -131,8 +139,8 @@ def checkout(update, context):
     #                             "Key ID 4 - PLR 1" + "\n" +
     #                             "Key ID 5 - PLR4")   
 
-# /profile command
-def profile(update, context):
+# /product command
+def product(update, context):
     update.message.reply_text("You have landed at the profile page!")
     update.message.reply_text("This page is still under development!")
     # update.message.reply_text("You have landed at the cart page!" + "\n\n" +
