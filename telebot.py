@@ -19,39 +19,37 @@ keys_dict = {0: None, 1:"Keypress", 2:"Keypress", 3:"Keypress", 4:"Keypress", 5:
 
 startkeyboard = [
         [
+            InlineKeyboardButton("Profile", callback_data='profile'),
             InlineKeyboardButton("Product", callback_data='product'),
-            InlineKeyboardButton("Cart", callback_data='cart'),
         ],
         [
+            InlineKeyboardButton("Cart", callback_data='cart'),
             InlineKeyboardButton("Checkout", callback_data='checkout'),
-            InlineKeyboardButton("Profile", callback_data='profile'),
         ],[
             InlineKeyboardButton("Promo", callback_data='promo'),
             InlineKeyboardButton("Help", callback_data='help'),
         ],
     ]
+
 helpkeyboard = [
         [
-            InlineKeyboardButton("Product", callback_data='product'),
-            InlineKeyboardButton("Cart", callback_data='cart'),
+            InlineKeyboardButton("Profile", callback_data='Profile'),
+            InlineKeyboardButton("Product", callback_data='Product'),
         ],
         [
-            InlineKeyboardButton("Checkout", callback_data='checkout'),
-            InlineKeyboardButton("Profile", callback_data='profile'),
+            InlineKeyboardButton("Cart", callback_data='cart'),
+            InlineKeyboardButton("Checkout", callback_data='Checkout'),
         ],[
             InlineKeyboardButton("Promo", callback_data='promo')
         ],
     ]
 #End of variable declaration
 
-# DONE
 # /start command
-def start(update: Update, context: CallbackContext):
+def start(update, context):
     first_name = update.message.chat.first_name
-
     reply_markup = InlineKeyboardMarkup(startkeyboard)
-    update.message.reply_text("Hello %s, nice to meet you and welcome to dissney mama shop!" % first_name)
-    update.message.reply_text('Please choose:', reply_markup=reply_markup)
+    update.message.reply_text("Hello " + str(first_name) + " , nice to meet you and welcome to ABC shop!", reply_markup=reply_markup)
 
 # Buttoon for callbackquery on inline button
 def button(update: Update, context: CallbackContext):
@@ -74,7 +72,6 @@ def button(update: Update, context: CallbackContext):
     elif query.data == "help":
         help(update, context)
 
-# DONE
 # /help command
 def help(update, context):
     query = update.callback_query
@@ -315,7 +312,6 @@ def main():
     dispatcher.add_handler(CommandHandler("promo", promo))
 
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
-    updater.dispatcher.add_handler(CallbackQueryHandler(help))
     # add an handler for normal text (not commands)
     dispatcher.add_handler(MessageHandler(Filters.text, text))
 
