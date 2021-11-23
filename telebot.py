@@ -1,6 +1,8 @@
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, CallbackContext, commandhandler
 import telegram
 from datetime import datetime
+
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
 #Variable Declaration
 STATE = None
@@ -18,17 +20,61 @@ keys_dict = {0: None, 1:"Keypress", 2:"Keypress", 3:"Keypress", 4:"Keypress", 5:
 
 # DONE
 # /start command
-def start(update, context):
+# def start(update, context):
+#     first_name = update.message.chat.first_name
+#     update.message.reply_text("Hello %s, nice to meet you and welcome to dissney mama shop!" % first_name)
+#     update.message.reply_text("Here are the commands:" + "\n\n" +
+#                               "/product     - View available products " + "\n" +
+#                               "/cart        - View shopping cart" + "\n" +
+#                               "/checkout    - Cart checkout" + "\n" +
+#                               "/profile     - User profile" + "\n" +
+#                               "/promo       - View promotional item" + "\n" + 
+#                               "/help        - View available help ")
+
+def start(update: Update, context: CallbackContext):
     first_name = update.message.chat.first_name
+    """Sends a message with three inline buttons attached."""
+    keyboard = [
+        [
+            InlineKeyboardButton("Product", callback_data='product'),
+            InlineKeyboardButton("Cart", callback_data='cart'),
+        ],
+        [
+            InlineKeyboardButton("Checkout", callback_data='checkout'),
+            InlineKeyboardButton("Profile", callback_data='profile'),
+        ],[
+            InlineKeyboardButton("Promo", callback_data='promo'),
+            InlineKeyboardButton("Help", callback_data='help'),
+        ],
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text("Hello %s, nice to meet you and welcome to dissney mama shop!" % first_name)
-    update.message.reply_text("Here are the commands:" + "\n\n" +
-                              "/product     - View available products " + "\n" +
-                              "/cart        - View shopping cart" + "\n" +
-                              "/checkout    - Cart checkout" + "\n" +
-                              "/profile     - User profile" + "\n" +
-                              "/promo       - View promotional item" + "\n" + 
-                              "/help        - View available help ")
-                              
+    update.message.reply_text('Please choose:', reply_markup=reply_markup)
+
+
+def button(update: Update, context: CallbackContext):
+    """Parses the CallbackQuery and updates the message text."""
+    query = update.callback_query
+
+    # CallbackQueries need to be answered, even if no notification to the user is needed
+    # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
+    query.answer()
+
+    if query.data == "product":
+        query.edit_message_text(text=f"Selected option: Product")
+    elif query.data == "cart":
+        query.edit_message_text(text=f"Selected option: Cart")
+    elif query.data == "checkout":
+        query.edit_message_text(text=f"Selected option: Checkout")
+    elif query.data == "profile":
+        query.edit_message_text(text=f"Selected option: Profile")
+    elif query.data == "promo":
+        query.edit_message_text(text=f"Selected option: Promo")
+    elif query == "help":
+        # query.edit_message_text(text=f"Selected option: Help")
+        help(update, context)
+
 # DONE
 # /help command
 def help(update, context):
@@ -266,7 +312,9 @@ def main():
     dispatcher.add_handler(CommandHandler("checkout", checkout))
     dispatcher.add_handler(CommandHandler("profile", profile))
     dispatcher.add_handler(CommandHandler("promo", promo))
-    
+
+    updater.dispatcher.add_handler(CallbackQueryHandler(button))
+    updater.dispatcher.add_handler(CallbackQueryHandler(help))
     # add an handler for normal text (not commands)
     dispatcher.add_handler(MessageHandler(Filters.text, text))
 
