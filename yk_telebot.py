@@ -1,6 +1,7 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, CallbackContext, commandhandler
 import telegram
 import firebase_admin
+import sqlite3
 from datetime import datetime
 from firebase_admin import db
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ParseMode
@@ -12,19 +13,13 @@ from handler.help import help
 from handler.checkout import checkout
 from handler.promo import promo
 
+from handler.profile import profile, received_email
+
+
 # Variable Declaration
-STATE = None
+STATE = 0
 # STATEs for Drawing Keys
-KEY_ID_DRAW = 1
-DRAWER_NAME = 2
-# STATEs for Returning Keys
-KEY_ID_RETURN = 3
-RETURN_NAME = 4
-# Storage system for key
-# keys_dict = {'key':'Name + ',' + Date'}
-# Future implementation to store this information in cloud
-keys_dict = {0: None, 1: "Keypress", 2: "Keypress",
-             3: "Keypress", 4: "Keypress", 5: "Keypress"}
+GET_EMAIL = 1
 
 startkeyboard = [
     [
@@ -40,29 +35,44 @@ startkeyboard = [
     ],
 ]
 
-profilekeyboard = [
-    [
-        InlineKeyboardButton("Update Email Address", callback_data='email'),
-        InlineKeyboardButton("Cart", callback_data='cart'),
-    ], [
-        InlineKeyboardButton("Checkout", callback_data='checkout'),
-        InlineKeyboardButton("Promo", callback_data='promo'),
-    ], [
-        InlineKeyboardButton("Help", callback_data='help')
-    ],
-]
+
 # End of variable declaration
 
 # /start command
 def start(update, context):
-    first_name = update.message.chat.username
-
+    global chatid, username
+    con = sqlite3.connect('ICT2103_Group32.db')
+    cur = con.cursor()
+    datetime_now = datetime.now()
+    dt_string = "'" + str(datetime_now.strftime('%d/%m/%Y %H:%M:%S')) + "'"
+    username = update.message.chat.username
+    chatid = "'" + str(update.message.chat.id) + "'"
+    fname = "'" + str(update.message.chat.first_name) + "'"
+    lname = "'" + str(update.message.chat.last_name) + "'"
     reply_markup = InlineKeyboardMarkup(startkeyboard)
-    update.message.reply_text("Hello " + str(first_name) +
+    does_user_exist = cur.execute(f"SELECT EXISTS(SELECT * FROM Customers WHERE chatID = {chatid})")
+    for i in does_user_exist:
+        does_user_exist_result = i[0]
+    if (does_user_exist_result == 0):
+        cur.execute(f"INSERT INTO Customers ('chatID', 'fname','lname','loyaltyType','accessedDate') VALUES ({chatid},{fname},{lname},0,{dt_string})")
+        con.commit()
+        update.message.reply_text("Hello " + fname +
+                              " , nice to meet you and welcome to ABC shop!", reply_markup=reply_markup)
+    else:
+        update.message.reply_text("Welcome back " + fname +
                               " , nice to meet you and welcome to ABC shop!", reply_markup=reply_markup)
 
+
+    # Inserting info into DB
+
+
+    con.close()
+
 # Buttoon for callbackquery on inline button
+
+
 def button(update: Update, context: CallbackContext):
+    global STATE
     query = update.callback_query
 
     # CallbackQueries need to be answered, even if no notification to the user is needed
@@ -70,7 +80,7 @@ def button(update: Update, context: CallbackContext):
     query.answer()
 
     if query.data == "profile":
-        profile(update, context)
+        profile(update, context, chatid, username)
     elif query.data == "cart":
         query.edit_message_text(text=f"Selected option: Cart")
     elif query.data == "checkout":
@@ -83,30 +93,31 @@ def button(update: Update, context: CallbackContext):
     elif query.data == "help":
         help(update, context)
     elif query.data == "email":
-        query.edit_message_text(text=f"Selected option: Update email")
+        STATE = GET_EMAIL
+        query.edit_message_text(text=f"Enter your email address")
     elif query.data == "mickeymouse":
         mickeymouse(update, context)
 
-# /profile command
-def profile(update, context):
-    query = update.callback_query
-    reply_markup = InlineKeyboardMarkup(profilekeyboard)  # to change keyboard
-
-    query.edit_message_text("*Profile:*" + "\n" +
-                            "Some profile description thingyyyyyyyyyyyyyyyyyyyyyyyyyyy", parse_mode='MarkdownV2', reply_markup=reply_markup)
-
 # Error message displayed to user
+
+
 def error(update, context):
     update.message.reply_text('An error has occured')
     print("Error: " + str(error()))
 
 # function to handle normal text
 # Add the different STATE here as response are received through text
+
+
 def text(update, context):
     global STATE
 
+    if STATE == GET_EMAIL:
+        received_email(update, context, chatid)
 # Main function
 # THIS IS THE PART THAT LINK THE COMMANDS TO THE FUNCTION
+
+
 def main():
     # Change TOKEN here
     TOKEN = "1509494665:AAGBFYwXPxGEeIkogksR7CEZlVyqYf9kNBM"
