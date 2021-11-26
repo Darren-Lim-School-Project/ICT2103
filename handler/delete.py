@@ -7,7 +7,7 @@ from handler.cart import cart, getTotalAmount
 # Delete inline keyboard options
 deletekeyboard = [
     [
-        InlineKeyboardButton("Main Menu", callback_data='back'),
+        InlineKeyboardButton("Main Menu", callback_data='mainmenu'),
         InlineKeyboardButton("Cart", callback_data='cart'),
     ],
     [
