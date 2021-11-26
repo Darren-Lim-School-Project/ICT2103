@@ -68,8 +68,6 @@ def start(update, context):
 
 
     # Inserting info into DB
-
-
     con.close()
 
 # Buttoon for callbackquery on inline button
