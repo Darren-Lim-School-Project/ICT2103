@@ -54,11 +54,15 @@ def start(update, context):
     for i in does_user_exist:
         does_user_exist_result = i[0]
     if (does_user_exist_result == 0):
-        cur.execute(f"INSERT INTO Customers ('chatID', 'fname','lname','loyaltyType','accessedDate') VALUES ({chatid},{fname},{lname},0,{dt_string})")
+        cur.execute(f"INSERT INTO Customers ('chatID', 'fname','lname','loyaltyType','firstAccessedDate') VALUES ({chatid},{fname},{lname},0,{dt_string})")
+        con.commit()
+        cur.execute(f"INSERT INTO Customers_Access_Records ('customerID', 'accessDate') VALUES ((SELECT customerID FROM Customers WHERE chatID = {chatid}),{dt_string})")
         con.commit()
         update.message.reply_text("Hello " + fname +
                               " , nice to meet you and welcome to ABC shop!", reply_markup=reply_markup)
     else:
+        cur.execute(f"INSERT INTO Customers_Access_Records ('customerID', 'accessDate') VALUES ((SELECT customerID FROM Customers WHERE chatID = {chatid}),{dt_string})")
+        con.commit()
         update.message.reply_text("Welcome back " + fname +
                               " , nice to meet you and welcome to ABC shop!", reply_markup=reply_markup)
 
