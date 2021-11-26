@@ -7,13 +7,19 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ParseMo
 
 from handler.product import product, mickeymouse
 from handler.tocart import tocart
-from handler.cart import cart
+
+from handler.cart import cart, getTotalAmount
 from handler.help import help
 from handler.checkout import checkout
 from handler.promo import promo
+from handler.delete import delete
+from handler.payment import payment
+
 
 # Variable Declaration
 STATE = None
+
+global totalAmount
 # STATEs for Drawing Keys
 KEY_ID_DRAW = 1
 DRAWER_NAME = 2
@@ -72,9 +78,9 @@ def button(update: Update, context: CallbackContext):
     if query.data == "profile":
         profile(update, context)
     elif query.data == "cart":
-        query.edit_message_text(text=f"Selected option: Cart")
+        cart(update, context)
     elif query.data == "checkout":
-        query.edit_message_text(text=f"Selected option: Checkout")
+        checkout(update, context, getTotalAmount())
     elif query.data == "product":
         #query.edit_message_text(text=f"Selected option: Product")
         product(update, context)
@@ -86,6 +92,11 @@ def button(update: Update, context: CallbackContext):
         query.edit_message_text(text=f"Selected option: Update email")
     elif query.data == "mickeymouse":
         mickeymouse(update, context)
+    elif query.data == "back":
+        start(update, context)
+    elif query.data == "checkoutimg":
+        payment(update, context, getTotalAmount())
+
 
 # /profile command
 def profile(update, context):
@@ -109,7 +120,7 @@ def text(update, context):
 # THIS IS THE PART THAT LINK THE COMMANDS TO THE FUNCTION
 def main():
     # Change TOKEN here
-    TOKEN = "1509494665:AAGBFYwXPxGEeIkogksR7CEZlVyqYf9kNBM"
+    TOKEN = "2132985175:AAEMPGwqmVmki5okwnzoonFti0XN5NlT4UA"
 
     # create the updater, that will automatically create also a dispatcher and a queue to
     # make them dialoge
@@ -127,6 +138,7 @@ def main():
     dispatcher.add_handler(CommandHandler("profile", profile))
     dispatcher.add_handler(CommandHandler("promo", promo))
     dispatcher.add_handler(CommandHandler("tocart", tocart, pass_args=True))
+    dispatcher.add_handler(CommandHandler("delete", delete, pass_args=True))
     dispatcher.add_handler(CommandHandler("mickeymouse", mickeymouse))
 
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
