@@ -6,7 +6,7 @@ from datetime import datetime
 from firebase_admin import db
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ParseMode
 
-from handler.product import product, mickeymouse
+from handler.product import product, mickeymouse, disneyAndPixar, marvel, frozen
 from handler.tocart import tocart
 
 from handler.cart import cart, getTotalAmount
@@ -97,6 +97,12 @@ def button(update: Update, context: CallbackContext):
         query.edit_message_text(text=f"Enter your email address")
     elif query.data == "mickeymouse":
         mickeymouse(update, context)
+    elif query.data == "pixar":
+        disneyAndPixar(update, context)
+    elif query.data == "marvel":
+        marvel(update, context)
+    elif query.data == "frozen":
+        frozen(update, context)
     elif query.data == "back":
         start(update, context)
     elif query.data == "checkoutimg":
