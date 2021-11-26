@@ -10,6 +10,9 @@ cartkeyboard = [
         InlineKeyboardButton("Main Menu", callback_data='back'),
         InlineKeyboardButton("Checkout", callback_data='checkout'),
     ],
+    [
+        InlineKeyboardButton("Products", callback_data='product'),
+    ],
 ]
 
 # Show Cart
@@ -36,7 +39,7 @@ def cart(update, context):
             # So technically cart is new and empty
             query.edit_message_text("*Cart:*" + "\n" +
                             "You have no items in your cart\." + "\n" +
-                            "You may want to view products using /products", parse_mode='MarkdownV2', reply_markup=reply_markup)
+                            "Click on the 'Products' Button to browse products\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
         else:
             # Shopping exists, but was not completed or abandoned
             cur.execute("SELECT * FROM Cart_Contents WHERE cartID=" + str(data[0]))
@@ -46,7 +49,7 @@ def cart(update, context):
                 # Shopping cart empty
                 query.edit_message_text("*Cart:*" + "\n" +
                             "You have no items in your cart\." + "\n" +
-                            "You may want to view products using /products", parse_mode='MarkdownV2', reply_markup=reply_markup)
+                            "Click on the 'Products' Button to browse products\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
             else:
                 # Shopping Cart not Empty
                 # Get the productID based on cartID to be able to retrieve product details
@@ -88,7 +91,7 @@ def cart(update, context):
         # So technically cart is empty
         query.edit_message_text("*Cart:*" + "\n" +
                             "You have no items in your cart\." + "\n" +
-                            "You may want to view products using /products", parse_mode='MarkdownV2', reply_markup=reply_markup)
+                            "Click on the 'Products' Button to browse products\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
 
 def getTotalAmount():
     return totalAmount

@@ -7,6 +7,7 @@ import sqlite3
 checkoutkeyboard = [
     [
         InlineKeyboardButton("Back", callback_data='cart'),
+        InlineKeyboardButton("Products", callback_data='product'),
     ],
 ]
 
@@ -34,7 +35,7 @@ def checkout(update, context, totalAmount):
         query.edit_message_text("*Checkout:*" + "\n" +
                             "You have no items in your cart\." + "\n" +
                             "There is no items to make payment\." + "\n" +
-                            "You may want to view products using /products", parse_mode='MarkdownV2', reply_markup=reply_markup)
+                            "Click on the 'Products' Button to browse products\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
             
     else:
         # Print out the text needed including the products

@@ -10,6 +10,9 @@ deletekeyboard = [
         InlineKeyboardButton("Main Menu", callback_data='back'),
         InlineKeyboardButton("Cart", callback_data='cart'),
     ],
+    [
+        InlineKeyboardButton("Products", callback_data='product'),
+    ],
 ]
 
 # /tocart command - Add Product to Cart
@@ -36,7 +39,7 @@ def delete(update, context):
                 # A shopping cart was either completed or abandoned
                 # So technically cart is new and empty
                 update.message.reply_text("You have no items in your cart\, no products to remove" + "\n\n" +
-                            "You may want to view products using /products", parse_mode='MarkdownV2', reply_markup=reply_markup)
+                            "Click on the 'Products' Button to browse products\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
             else:
                 # Shopping cart exist and not completed or abandoned
                 # Getting cart contents based on cartID
@@ -48,7 +51,7 @@ def delete(update, context):
                 if (len(cartItem) == 0):
                     # Shopping cart empty
                     update.message.reply_text("You have no items in your cart\, no products to remove" + "\n\n" +
-                            "You may want to view products using /products", parse_mode='MarkdownV2', reply_markup=reply_markup)
+                            "Click on the 'Products' Button to browse products\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
                 else:
                     # need check if argument productID is in cart
                     counter = 0
@@ -106,4 +109,4 @@ def delete(update, context):
             # A shopping cart don't exist
             # So technically cart is new and empty
             update.message.reply_text("You have no items in your cart\, no products to remove" + "\n\n" +
-                        "You may want to view products using /products", parse_mode='MarkdownV2', reply_markup=reply_markup)
+                        "Click on the 'Products' Button to browse products\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
