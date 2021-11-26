@@ -75,5 +75,4 @@ def tocart(update, context):
             return
         update.message.reply_text(str(productInfo[0][4]) + " has been added to the shopping cart")
         con.close()
-
-   
+    
