@@ -8,11 +8,10 @@ productkeyboard = [
     [
         InlineKeyboardButton("Mickey Mouse and Friends", callback_data='mickeymouse'),
         InlineKeyboardButton("Disney and Pixar", callback_data='pixar'),
-        InlineKeyboardButton("Marvel", callback_data='marvel'),
+        
     ], [
+        InlineKeyboardButton("Marvel", callback_data='marvel'),
         InlineKeyboardButton("Frozen", callback_data='frozen'),
-        InlineKeyboardButton("Princess", callback_data='princess'),
-        InlineKeyboardButton("Star Wars", callback_data='starwars')
     ],
 ]
 
