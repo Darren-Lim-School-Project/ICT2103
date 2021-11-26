@@ -21,7 +21,7 @@ profilekeyboard = [
         InlineKeyboardButton("Update Email Address", callback_data='email'),
         InlineKeyboardButton("Cart", callback_data='cart'),
     ], [
-        InlineKeyboardButton("Checkout", callback_data='checkout'),
+        InlineKeyboardButton("Product", callback_data='product'),
         InlineKeyboardButton("Promo", callback_data='promo'),
     ], [
         InlineKeyboardButton("Help", callback_data='help')
