@@ -41,7 +41,7 @@ startkeyboard = [
 
 # /start command
 def start(update, context):
-    global chatid, username
+    global chatid, username, fname
     con = sqlite3.connect('ICT2103_Group32.db')
     cur = con.cursor()
     datetime_now = datetime.now()
@@ -101,6 +101,8 @@ def button(update: Update, context: CallbackContext):
         start(update, context)
     elif query.data == "checkoutimg":
         payment(update, context, getTotalAmount())
+    elif query.data == "mainmenu":
+        mainmenu(update, context)
 
 # Error message displayed to user
 def error(update, context):
@@ -115,11 +117,24 @@ def text(update, context):
     if STATE == GET_EMAIL:
         received_email(update, context, chatid)
 
+# Main Menu
+def mainmenu(update, context):
+    query = update.callback_query
+    reply_markup = InlineKeyboardMarkup(startkeyboard)
+    # fname = "'" + str(update.message.chat.first_name) + "'"
+    query.edit_message_text("Hello " + fname +
+                              " , nice to meet you and welcome to ABC shop!", reply_markup=reply_markup)
+
 # Main function
 # THIS IS THE PART THAT LINK THE COMMANDS TO THE FUNCTION
 def main():
     # Change TOKEN here
-    TOKEN = "1509494665:AAGBFYwXPxGEeIkogksR7CEZlVyqYf9kNBM"
+    # YK
+    # TOKEN = "1509494665:AAGBFYwXPxGEeIkogksR7CEZlVyqYf9kNBM"
+    # Darren
+    # TOKEN = "2140713559:AAFunBF0TFdivjUeskd1TLNtKwwfhT_bnIE"
+    # Ken
+    TOKEN = "2132985175:AAEMPGwqmVmki5okwnzoonFti0XN5NlT4UA"
 
     # create the updater, that will automatically create also a dispatcher and a queue to
     # make them dialoge

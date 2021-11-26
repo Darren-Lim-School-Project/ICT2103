@@ -7,7 +7,7 @@ import sqlite3
 
 cartkeyboard = [
     [
-        InlineKeyboardButton("Main Menu", callback_data='back'),
+        InlineKeyboardButton("Main Menu", callback_data='mainmenu'),
         InlineKeyboardButton("Checkout", callback_data='checkout'),
     ],
     [
