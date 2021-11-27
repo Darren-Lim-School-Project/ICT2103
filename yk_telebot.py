@@ -1,26 +1,23 @@
-import sqlite3
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, CallbackContext, commandhandler
 import telegram
 import firebase_admin
+import sqlite3
 from datetime import datetime
 from firebase_admin import db
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ParseMode
 
 from handler.product import product, mickeymouse
 from handler.tocart import tocart
-
-from handler.cart import cart, getTotalAmount
+from handler.cart import cart
 from handler.help import help
 from handler.checkout import checkout
 from handler.promo import promo
-from handler.delete import delete
-from handler.payment import payment
+
 from handler.profile import profile, received_email
 
 
 # Variable Declaration
-STATE = None
-global totalAmount
+STATE = 0
 # STATEs for Drawing Keys
 GET_EMAIL = 1
 
@@ -37,11 +34,13 @@ startkeyboard = [
         InlineKeyboardButton("Help", callback_data='help'),
     ],
 ]
+
+
 # End of variable declaration
 
 # /start command
 def start(update, context):
-    global chatid, username, fname
+    global chatid, username
     con = sqlite3.connect('ICT2103_Group32.db')
     cur = con.cursor()
     datetime_now = datetime.now()
@@ -72,6 +71,8 @@ def start(update, context):
     con.close()
 
 # Buttoon for callbackquery on inline button
+
+
 def button(update: Update, context: CallbackContext):
     global STATE
     query = update.callback_query
@@ -83,10 +84,11 @@ def button(update: Update, context: CallbackContext):
     if query.data == "profile":
         profile(update, context, chatid, username)
     elif query.data == "cart":
-        cart(update, context)
+        query.edit_message_text(text=f"Selected option: Cart")
     elif query.data == "checkout":
-        checkout(update, context, getTotalAmount())
+        query.edit_message_text(text=f"Selected option: Checkout")
     elif query.data == "product":
+        #query.edit_message_text(text=f"Selected option: Product")
         product(update, context)
     elif query.data == "promo":
         promo(update, context)
@@ -97,44 +99,30 @@ def button(update: Update, context: CallbackContext):
         query.edit_message_text(text=f"Enter your email address")
     elif query.data == "mickeymouse":
         mickeymouse(update, context)
-    elif query.data == "back":
-        start(update, context)
-    elif query.data == "checkoutimg":
-        payment(update, context, getTotalAmount())
-    elif query.data == "mainmenu":
-        mainmenu(update, context)
 
 # Error message displayed to user
+
+
 def error(update, context):
     update.message.reply_text('An error has occured')
     print("Error: " + str(error()))
 
 # function to handle normal text
 # Add the different STATE here as response are received through text
+
+
 def text(update, context):
     global STATE
 
     if STATE == GET_EMAIL:
         received_email(update, context, chatid)
-
-# Main Menu
-def mainmenu(update, context):
-    query = update.callback_query
-    reply_markup = InlineKeyboardMarkup(startkeyboard)
-    # fname = "'" + str(update.message.chat.first_name) + "'"
-    query.edit_message_text("Hello " + fname +
-                              " , nice to meet you and welcome to ABC shop!", reply_markup=reply_markup)
-
 # Main function
 # THIS IS THE PART THAT LINK THE COMMANDS TO THE FUNCTION
+
+
 def main():
     # Change TOKEN here
-    # YK
-    # TOKEN = "1509494665:AAGBFYwXPxGEeIkogksR7CEZlVyqYf9kNBM"
-    # Darren
-    # TOKEN = "2140713559:AAFunBF0TFdivjUeskd1TLNtKwwfhT_bnIE"
-    # Ken
-    TOKEN = "2132985175:AAEMPGwqmVmki5okwnzoonFti0XN5NlT4UA"
+    TOKEN = "1509494665:AAGBFYwXPxGEeIkogksR7CEZlVyqYf9kNBM"
 
     # create the updater, that will automatically create also a dispatcher and a queue to
     # make them dialoge
@@ -147,11 +135,11 @@ def main():
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help))
     dispatcher.add_handler(CommandHandler("product", product))
+    dispatcher.add_handler(CommandHandler("cart", cart))
     dispatcher.add_handler(CommandHandler("checkout", checkout))
     dispatcher.add_handler(CommandHandler("profile", profile))
     dispatcher.add_handler(CommandHandler("promo", promo))
     dispatcher.add_handler(CommandHandler("tocart", tocart, pass_args=True))
-    dispatcher.add_handler(CommandHandler("delete", delete, pass_args=True))
     dispatcher.add_handler(CommandHandler("mickeymouse", mickeymouse))
 
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
