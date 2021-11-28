@@ -6,7 +6,7 @@ from datetime import datetime
 from firebase_admin import db
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ParseMode
 
-from handler.product import product, mickeymouse
+from handler.product import product, mickeymouse, disneyAndPixar, marvel, frozen
 from handler.tocart import tocart
 
 from handler.cart import cart, getTotalAmount
@@ -97,6 +97,12 @@ def button(update: Update, context: CallbackContext):
         query.edit_message_text(text=f"Enter your email address")
     elif query.data == "mickeymouse":
         mickeymouse(update, context)
+    elif query.data == "pixar":
+        disneyAndPixar(update, context)
+    elif query.data == "marvel":
+        marvel(update, context)
+    elif query.data == "frozen":
+        frozen(update, context)
     elif query.data == "back":
         start(update, context)
     elif query.data == "checkoutimg":
@@ -144,15 +150,16 @@ def main():
     # add handlers for start and help commands
     # CommandHandler(Command User Type, function to call)
     # Add commands here
+    # Some clean up done on 27 Nov, should probably need start, end, tocart, and delete commands. the rest should be by button
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("help", help))
-    dispatcher.add_handler(CommandHandler("product", product))
-    dispatcher.add_handler(CommandHandler("checkout", checkout))
-    dispatcher.add_handler(CommandHandler("profile", profile))
-    dispatcher.add_handler(CommandHandler("promo", promo))
+    # dispatcher.add_handler(CommandHandler("help", help))
+    # dispatcher.add_handler(CommandHandler("product", product))
+    # dispatcher.add_handler(CommandHandler("checkout", checkout))
+    # dispatcher.add_handler(CommandHandler("profile", profile))
+    # dispatcher.add_handler(CommandHandler("promo", promo))
     dispatcher.add_handler(CommandHandler("tocart", tocart, pass_args=True))
     dispatcher.add_handler(CommandHandler("delete", delete, pass_args=True))
-    dispatcher.add_handler(CommandHandler("mickeymouse", mickeymouse))
+    # dispatcher.add_handler(CommandHandler("mickeymouse", mickeymouse))
 
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
     # add an handler for normal text (not commands)
