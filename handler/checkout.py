@@ -40,5 +40,5 @@ def checkout(update, context, totalAmount):
     else:
         # Print out the text needed including the products
         query.edit_message_text("<b>Checkout</b>" + "\n\n" +
-                            "Total Payable: <b>" + str('{:.2f}'.format(totalAmount)) + "</b>\n\n" +
+                            "Total Payable: <b>$" + str('{:.2f}'.format(totalAmount)) + "</b>\n\n" +
                             "Would you like to make payment?", parse_mode="html", reply_markup=reply_markup1)
