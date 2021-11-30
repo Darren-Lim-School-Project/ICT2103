@@ -32,7 +32,7 @@ def cart(update, context):
     if (data is not None):
         # A shopping cart exists
         # Check if the shopping cart is completed or abandoned
-        cur.execute("SELECT cc.cartID, ac.cartID FROM Completed_Cart cc, Abandoned_Cart ac WHERE cc.cartID=" + str(data[0]) + " OR ac.cartID = " + str(data[0]))
+        cur.execute("SELECT cartID FROM Completed_Cart WHERE cartID=" + str(data[0]))
         ccac = cur.fetchall()
         if (int(len(ccac)) > 0):
             # A shopping cart was either completed or abandoned
@@ -80,7 +80,7 @@ def cart(update, context):
                 # Print out the text needed including the products
                 query.edit_message_text("<b>Cart</b>" + "\n\n" +
                                         stringAppend + "" +
-                                        "Total Payable: <b>" + str('{:.2f}'.format(totalAmount)) + "</b>\n\n"
+                                        "Total Payable: <b>$" + str('{:.2f}'.format(totalAmount)) + "</b>\n\n"
                                         "To delete an item from cart, use" + "\n" + "/delete [Product ID] [Quantity]" + "\n"
                                         "example: /delete 1 2", parse_mode="html", reply_markup=reply_markup)
                 # Close DB connection as no longer needed

@@ -33,7 +33,7 @@ def delete(update, context):
         if (data is not None):
             # A shopping cart exists
             # Check if the shopping cart is completed or abandoned
-            cur.execute("SELECT cc.cartID, ac.cartID FROM Completed_Cart cc, Abandoned_Cart ac WHERE cc.cartID=" + str(data[0]) + " OR ac.cartID = " + str(data[0]))
+            cur.execute("SELECT cartID FROM Completed_Cart WHERE cartID=" + str(data[0]))
             ccac = cur.fetchall()
             if (int(len(ccac)) > 0):
                 # A shopping cart was either completed or abandoned
