@@ -4,28 +4,28 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 # Import of SQLite 3
 import sqlite3
 
-productkeyboard = [
+sqlproductkeyboard = [
     [
-        InlineKeyboardButton("Mickey Mouse and Friends", callback_data='mickeymouse'),
-        InlineKeyboardButton("Disney and Pixar", callback_data='pixar'),
+        InlineKeyboardButton("Mickey Mouse and Friends", callback_data='sqlmickeymouse'),
+        InlineKeyboardButton("Disney and Pixar", callback_data='sqlpixar'),
         
     ], [
-        InlineKeyboardButton("Marvel", callback_data='marvel'),
-        InlineKeyboardButton("Frozen", callback_data='frozen'),
+        InlineKeyboardButton("Marvel", callback_data='sqlmarvel'),
+        InlineKeyboardButton("Frozen", callback_data='sqlfrozen'),
     ],
 ]
 
-displayedProductkeyboard = [
+sqldisplayedProductkeyboard = [
     [
-        InlineKeyboardButton("Back", callback_data='product'),
+        InlineKeyboardButton("Back", callback_data='sqlproduct'),
         
     ],
 ]
 
 # /product command
-def product(update, context):
+def sql_product(update, context):
     query = update.callback_query
-    reply_markup = InlineKeyboardMarkup(productkeyboard)  # to change keyboard
+    reply_markup = InlineKeyboardMarkup(sqlproductkeyboard)  # to change keyboard
 
     query.edit_message_text("*Product Menu:*" + "\n" +
                             "Mickey Mouse and Friends   \- View Mickey Mouse and Friends Category " + "\n" + 
@@ -35,9 +35,9 @@ def product(update, context):
                             "Please select a category to view the product inside\.", parse_mode='MarkdownV2', reply_markup=reply_markup)
 
 # /mickeymouse command
-def mickeymouse(update, context):
+def sql_mickeymouse(update, context):
     
-    reply_markup = InlineKeyboardMarkup(displayedProductkeyboard)  # to change keyboard
+    reply_markup = InlineKeyboardMarkup(sqldisplayedProductkeyboard)  # to change keyboard
     # Setup connection to "ICT2103_Group32.db"
     con = sqlite3.connect('ICT2103_Group32.db')
     cur = con.cursor()
@@ -60,13 +60,13 @@ def mickeymouse(update, context):
     print(stringAppend)
     query.edit_message_text("<b>Mickey Mouse Product</b>" + "\n\n" +
                             stringAppend + "\n" +
-                            "To add an item to cart, use" + "\n" + "/tocart [Product ID] [Quantity]", parse_mode="html", reply_markup=reply_markup)
+                            "To add an item to cart, use" + "\n" + "/sql_tocart [Product ID] [Quantity]", parse_mode="html", reply_markup=reply_markup)
     con.close()
 
 # /disney and pixar command
-def disneyAndPixar(update, context):
+def sql_disneyAndPixar(update, context):
     
-    reply_markup = InlineKeyboardMarkup(displayedProductkeyboard)  # to change keyboard
+    reply_markup = InlineKeyboardMarkup(sqldisplayedProductkeyboard)  # to change keyboard
     # Setup connection to "ICT2103_Group32.db"
     con = sqlite3.connect('ICT2103_Group32.db')
     cur = con.cursor()
@@ -89,13 +89,13 @@ def disneyAndPixar(update, context):
     print(stringAppend)
     query.edit_message_text("<b>Disney and Pixar Product</b>" + "\n\n" +
                             stringAppend + "\n" +
-                            "To add an item to cart, use" + "\n" + "/tocart [Product ID] [Quantity]", parse_mode="html", reply_markup=reply_markup)
+                            "To add an item to cart, use" + "\n" + "/sql_tocart [Product ID] [Quantity]", parse_mode="html", reply_markup=reply_markup)
     con.close()
 
 # /marvel command
-def marvel(update, context):
+def sql_marvel(update, context):
     
-    reply_markup = InlineKeyboardMarkup(displayedProductkeyboard)  # to change keyboard
+    reply_markup = InlineKeyboardMarkup(sqldisplayedProductkeyboard)  # to change keyboard
     # Setup connection to "ICT2103_Group32.db"
     con = sqlite3.connect('ICT2103_Group32.db')
     cur = con.cursor()
@@ -118,13 +118,13 @@ def marvel(update, context):
     print(stringAppend)
     query.edit_message_text("<b>Marvel Product</b>" + "\n\n" +
                             stringAppend + "\n" +
-                            "To add an item to cart, use" + "\n" + "/tocart [Product ID] [Quantity]", parse_mode="html", reply_markup=reply_markup)
+                            "To add an item to cart, use" + "\n" + "/sql_tocart [Product ID] [Quantity]", parse_mode="html", reply_markup=reply_markup)
     con.close()
 
 # /frozen command
-def frozen(update, context):
+def sql_frozen(update, context):
     
-    reply_markup = InlineKeyboardMarkup(displayedProductkeyboard)  # to change keyboard
+    reply_markup = InlineKeyboardMarkup(sqldisplayedProductkeyboard)  # to change keyboard
     # Setup connection to "ICT2103_Group32.db"
     con = sqlite3.connect('ICT2103_Group32.db')
     cur = con.cursor()
@@ -147,5 +147,5 @@ def frozen(update, context):
     print(stringAppend)
     query.edit_message_text("<b>Frozen Product</b>" + "\n\n" +
                             stringAppend + "\n" +
-                            "To add an item to cart, use" + "\n" + "/tocart [Product ID] [Quantity]", parse_mode="html", reply_markup=reply_markup)
+                            "To add an item to cart, use" + "\n" + "/sql_tocart [Product ID] [Quantity]", parse_mode="html", reply_markup=reply_markup)
     con.close()

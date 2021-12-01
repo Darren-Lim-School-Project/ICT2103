@@ -3,28 +3,28 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 import sqlite3
 from datetime import datetime
 
-backToProduct = [
+nosqlbackToProduct = [
     [
-        InlineKeyboardButton("Main Menu", callback_data='mainmenu'),
-        InlineKeyboardButton("Back to Product", callback_data='product'),
+        InlineKeyboardButton("Main Menu", callback_data='nosqlmainmenu'),
+        InlineKeyboardButton("Back to Product", callback_data='nosqlproduct'),
     ],
 ]
 
-backToProductOrCart = [
+nosqlbackToProductOrCart = [
     [
-        InlineKeyboardButton("Main Menu", callback_data='mainmenu'),
-        InlineKeyboardButton("Back to Product", callback_data='product'),
+        InlineKeyboardButton("Main Menu", callback_data='nosqlmainmenu'),
+        InlineKeyboardButton("Back to Product", callback_data='nosqlproduct'),
     ], [
-        InlineKeyboardButton("View Cart", callback_data='cart'),
+        InlineKeyboardButton("View Cart", callback_data='nosqlcart'),
     ],
 ]
 
-# /tocart command - Add Product to Cart
-def tocart(update, context):
-    toProduct = InlineKeyboardMarkup(backToProduct)
-    toProductOrCart = InlineKeyboardMarkup(backToProductOrCart)
+# /nosql_tocart command - Add Product to Cart
+def nosql_tocart(update, context):
+    toProduct = InlineKeyboardMarkup(nosqlbackToProduct)
+    toProductOrCart = InlineKeyboardMarkup(nosqlbackToProductOrCart)
     if (len(context.args) != 2):
-        update.message.reply_text("Invalid commands!" + "\n" + "Syntax: /tocart [Product ID] [Quantity]", reply_markup=toProduct)
+        update.message.reply_text("Invalid commands!" + "\n" + "Syntax: /nosql_tocart [Product ID] [Quantity]", reply_markup=toProduct)
     else:
         # Setup connection to "ICT2103_Group32.db"
         con = sqlite3.connect('ICT2103_Group32.db')

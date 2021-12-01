@@ -1,28 +1,26 @@
 import telegram
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 import sqlite3
-from datetime import datetime
-from handler.cart import cart, getTotalAmount
 
 # Delete inline keyboard options
-deletekeyboard = [
+sqldeletekeyboard = [
     [
-        InlineKeyboardButton("Main Menu", callback_data='mainmenu'),
-        InlineKeyboardButton("Cart", callback_data='cart'),
+        InlineKeyboardButton("Main Menu", callback_data='sqlmainmenu'),
+        InlineKeyboardButton("Cart", callback_data='sqlcart'),
     ],
     [
-        InlineKeyboardButton("Products", callback_data='product'),
+        InlineKeyboardButton("Products", callback_data='sqlproduct'),
     ],
 ]
 
-# /tocart command - Add Product to Cart
-def delete(update, context):
+# /sql_tocart command - Add Product to Cart
+def sql_delete(update, context):
 
     query = update.callback_query
-    reply_markup = InlineKeyboardMarkup(deletekeyboard)
+    reply_markup = InlineKeyboardMarkup(sqldeletekeyboard)
     # Check given argument if correct syntax
     if (len(context.args) != 2):
-        update.message.reply_text("Invalid commands!" + "\n" + "Syntax: /delete [Product ID] [Quantity]")
+        update.message.reply_text("Invalid commands!" + "\n" + "Syntax: /sql_delete [Product ID] [Quantity]")
     else:
         # Setup connection to "ICT2103_Group32.db"
         con = sqlite3.connect('ICT2103_Group32.db')

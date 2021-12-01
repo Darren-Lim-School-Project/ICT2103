@@ -4,7 +4,7 @@ import telegram
 import sqlite3
 
 # Show current Promo items
-def promo(update, context):
+def nosql_promo(update, context):
     # Setup connection to "ICT2103_Group32.db"
     con = sqlite3.connect('ICT2103_Group32.db')
     cur = con.cursor()
@@ -24,5 +24,5 @@ def promo(update, context):
             
     query.edit_message_text("<b>Promotion</b>" + "\n\n" +
                             stringAppend + "\n" +
-                            "To add an item to cart, use" + "\n" + "/tocart [Product ID] [Quantity]", parse_mode="html")
+                            "To add an item to cart, use" + "\n" + "/nosql_tocart [Product ID] [Quantity]", parse_mode="html")
     con.close()

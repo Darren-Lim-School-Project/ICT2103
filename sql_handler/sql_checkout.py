@@ -4,36 +4,36 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 # Import of SQLite 3
 import sqlite3
 
-checkoutkeyboard = [
+sqlcheckoutkeyboard = [
     [
-        InlineKeyboardButton("Back", callback_data='cart'),
-        InlineKeyboardButton("Products", callback_data='product'),
+        InlineKeyboardButton("Back", callback_data='sqlcart'),
+        InlineKeyboardButton("Products", callback_data='sqlproduct'),
     ],
 ]
 
-checkoutkeyboard1 = [
+sqlcheckoutkeyboard1 = [
     [
-        InlineKeyboardButton("No", callback_data='cart'),
-        InlineKeyboardButton("Yes", callback_data='checkoutimg'),
+        InlineKeyboardButton("No", callback_data='sqlcart'),
+        InlineKeyboardButton("Yes", callback_data='sqlcheckoutimg'),
     ],
 ]
-checkoutkeyboard2 = [
+sqlcheckoutkeyboard2 = [
     [
-        InlineKeyboardButton("Cart", callback_data='cart'),
-        InlineKeyboardButton("Product", callback_data='product'),
+        InlineKeyboardButton("Cart", callback_data='sqlcart'),
+        InlineKeyboardButton("Product", callback_data='sqlproduct'),
     ],
 ]
 
 # Checkout Cart
-def checkout(update, context, totalAmount):
+def sql_checkout(update, context, totalAmount):
     # Setup connection to "ICT2103_Group32.db"
     con = sqlite3.connect('ICT2103_Group32.db')
     cur = con.cursor()
 
     query = update.callback_query
-    reply_markup = InlineKeyboardMarkup(checkoutkeyboard)
-    reply_markup1 = InlineKeyboardMarkup(checkoutkeyboard1)
-    reply_markup2 = InlineKeyboardMarkup(checkoutkeyboard2)
+    reply_markup = InlineKeyboardMarkup(sqlcheckoutkeyboard)
+    reply_markup1 = InlineKeyboardMarkup(sqlcheckoutkeyboard1)
+    reply_markup2 = InlineKeyboardMarkup(sqlcheckoutkeyboard2)
 
     if totalAmount == 0:
         # A shopping cart does not exist
