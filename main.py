@@ -1,9 +1,8 @@
 import sqlite3
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, CallbackContext, commandhandler
 import telegram
-import firebase_admin
 from datetime import datetime
-from firebase_admin import db
+from firestoredb import db
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 
 # SQL
@@ -112,7 +111,7 @@ def button(update: Update, context: CallbackContext):
         sql_mainmenu(update, context)
     # NoSQL
     elif query.data == "nosqlprofile":
-        nosql_profile(update, context, chatid, username)
+        nosql_profile(update, context, chatid,username)
     elif query.data == "nosqlcart":
         nosql_cart(update, context)
     elif query.data == "nosqlcheckout":
@@ -146,9 +145,9 @@ def button(update: Update, context: CallbackContext):
 def main():
     # Change TOKEN here
     # YK
-    # TOKEN = "1509494665:AAGBFYwXPxGEeIkogksR7CEZlVyqYf9kNBM"
+    TOKEN = "1509494665:AAGBFYwXPxGEeIkogksR7CEZlVyqYf9kNBM"
     # Darren
-    TOKEN = "2140713559:AAFunBF0TFdivjUeskd1TLNtKwwfhT_bnIE"
+    #TOKEN = "2140713559:AAFunBF0TFdivjUeskd1TLNtKwwfhT_bnIE"
     # Ken
     #TOKEN = "2132985175:AAEMPGwqmVmki5okwnzoonFti0XN5NlT4UA"
 

@@ -1,7 +1,6 @@
 import telegram
-import sqlite3
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
-
+from firestoredb import db
 
 nosqlhelpkeyboard = [
     [
@@ -29,19 +28,19 @@ nosqlprofilekeyboard = [
 ]
 
 # /profile command
-def nosql_profile(update, context, chatid, username):
+def nosql_profile(update, context, chatid,username):
     query = update.callback_query
-    con = sqlite3.connect('ICT2103_Group32.db')
-    cur = con.cursor()
-    user_object = cur.execute(f"SELECT * FROM Customers WHERE chatID = {chatid}")
-    con.commit()
-    for i in user_object:
-        fname = i[2]
-        lname = i[3]
-        email = i[4]
+    docs = db.collection(u'Customers').stream()
+    for doc in docs:
+        if (str(doc.id) == str(chatid)):
+            does_user_exist_result = 1
+            match = doc.to_dict()
+    fname = match.get("fname")
+    lname = match.get("lname")
+    email = match.get("email")
     if email is None:
-        email = "None"
-    telegramname = username
+         email = "None"
+
     reply_markup = InlineKeyboardMarkup(nosqlprofilekeyboard) # to change keyboard
 
     query.edit_message_text("*Profile:*" + "\n" +
@@ -56,8 +55,6 @@ def nosql_profile(update, context, chatid, username):
 # Get Key ID (Drawing) from reply
 def nosql_received_email(update, context, chatid):
     global STATE
-    con = sqlite3.connect('ICT2103_Group32.db')
-    cur = con.cursor()
     new_string = ""
     temp_array = []
     counter = 0
@@ -76,8 +73,12 @@ def nosql_received_email(update, context, chatid):
     for i in temp_array:
         new_string+= i
 
-    cur.execute(f"UPDATE Customers SET email = {new_string} WHERE chatID = {chatid}")
-    con.commit()
+    doc_ref = db.collection(u'Customers').document(f'{update.message.chat.id}')
+    field_updates = {"email": new_string}
+    doc_ref.update(field_updates)
+
+    # cur.execute(f"UPDATE Customers SET email = {new_string} WHERE chatID = {chatid}")
+    # con.commit()
     update.message.reply_text("*Updated Email*" + "\n" +
                               "Your email has been updated to the following:" + "\n" +
                               "Email: __" + str(new_string) + "__\n\n", parse_mode='MarkdownV2', reply_markup=reply_markup)  
