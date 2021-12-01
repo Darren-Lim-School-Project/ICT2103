@@ -5,18 +5,18 @@ from datetime import datetime
 # Import of SQLite 3
 import sqlite3
 
-cartkeyboard = [
+nosqlcartkeyboard = [
     [
-        InlineKeyboardButton("Main Menu", callback_data='mainmenu'),
-        InlineKeyboardButton("Checkout", callback_data='checkout'),
+        InlineKeyboardButton("Main Menu", callback_data='sqlmainmenu'),
+        InlineKeyboardButton("Checkout", callback_data='sqlcheckout'),
     ],
     [
-        InlineKeyboardButton("Products", callback_data='product'),
+        InlineKeyboardButton("Products", callback_data='sqlproduct'),
     ],
 ]
 
 # Show Cart
-def cart(update, context):
+def sql_cart(update, context):
     global totalAmount
     totalAmount = 0
     # Setup connection to "ICT2103_Group32.db"
@@ -24,7 +24,7 @@ def cart(update, context):
     cur = con.cursor()
 
     query = update.callback_query
-    reply_markup = InlineKeyboardMarkup(cartkeyboard)
+    reply_markup = InlineKeyboardMarkup(nosqlcartkeyboard)
 
     # TODO Update customerID when ready
     cur.execute("SELECT cartID from Shopping_Cart WHERE customerID=1 ORDER BY cartID DESC")
@@ -32,7 +32,7 @@ def cart(update, context):
     if (data is not None):
         # A shopping cart exists
         # Check if the shopping cart is completed or abandoned
-        cur.execute("SELECT cc.cartID, ac.cartID FROM Completed_Cart cc, Abandoned_Cart ac WHERE cc.cartID=" + str(data[0]) + " OR ac.cartID = " + str(data[0]))
+        cur.execute("SELECT cartID FROM Completed_Cart WHERE cartID=" + str(data[0]))
         ccac = cur.fetchall()
         if (int(len(ccac)) > 0):
             # A shopping cart was either completed or abandoned
@@ -80,9 +80,9 @@ def cart(update, context):
                 # Print out the text needed including the products
                 query.edit_message_text("<b>Cart</b>" + "\n\n" +
                                         stringAppend + "" +
-                                        "Total Payable: <b>" + str('{:.2f}'.format(totalAmount)) + "</b>\n\n"
-                                        "To delete an item from cart, use" + "\n" + "/delete [Product ID] [Quantity]" + "\n"
-                                        "example: /delete 1 2", parse_mode="html", reply_markup=reply_markup)
+                                        "Total Payable: <b>$" + str('{:.2f}'.format(totalAmount)) + "</b>\n\n"
+                                        "To delete an item from cart, use" + "\n" + "/sql_delete [Product ID] [Quantity]" + "\n"
+                                        "example: /sql_delete 1 2", parse_mode="html", reply_markup=reply_markup)
                 # Close DB connection as no longer needed
                 con.close()
     else:
@@ -93,5 +93,5 @@ def cart(update, context):
                             "You have no items in your cart\." + "\n" +
                             "Click on the 'Products' Button to browse products\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
 
-def getTotalAmount():
+def sql_getTotalAmount():
     return totalAmount

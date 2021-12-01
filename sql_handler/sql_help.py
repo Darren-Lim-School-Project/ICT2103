@@ -1,23 +1,23 @@
 import telegram
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
-helpkeyboard = [
+sqlhelpkeyboard = [
     [
-        InlineKeyboardButton("Profile", callback_data='profile'),
-        InlineKeyboardButton("Product", callback_data='product'),
+        InlineKeyboardButton("Profile", callback_data='sqlprofile'),
+        InlineKeyboardButton("Product", callback_data='sqlproduct'),
     ],
     [
-        InlineKeyboardButton("Cart", callback_data='cart'),
-        InlineKeyboardButton("Checkout", callback_data='checkout'),
+        InlineKeyboardButton("Cart", callback_data='sqlcart'),
+        InlineKeyboardButton("Checkout", callback_data='sqlcheckout'),
     ], [
-        InlineKeyboardButton("Promo", callback_data='promo')
+        InlineKeyboardButton("Promo", callback_data='sqlpromo')
     ],
 ]
 
 # /help command 
-def help(update, context):
+def sql_help(update, context):
     query = update.callback_query
-    reply_markup = InlineKeyboardMarkup(helpkeyboard)
+    reply_markup = InlineKeyboardMarkup(sqlhelpkeyboard)
 
     query.edit_message_text("*Help:*" + "\n" +
                             "Product     \- View available products " + "\n" +

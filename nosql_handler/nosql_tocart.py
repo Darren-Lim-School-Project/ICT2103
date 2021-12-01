@@ -1,18 +1,37 @@
 import telegram
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 import sqlite3
 from datetime import datetime
 
-# /tocart command - Add Product to Cart
-def tocart(update, context):
+nosqlbackToProduct = [
+    [
+        InlineKeyboardButton("Main Menu", callback_data='nosqlmainmenu'),
+        InlineKeyboardButton("Back to Product", callback_data='nosqlproduct'),
+    ],
+]
+
+nosqlbackToProductOrCart = [
+    [
+        InlineKeyboardButton("Main Menu", callback_data='nosqlmainmenu'),
+        InlineKeyboardButton("Back to Product", callback_data='nosqlproduct'),
+    ], [
+        InlineKeyboardButton("View Cart", callback_data='nosqlcart'),
+    ],
+]
+
+# /nosql_tocart command - Add Product to Cart
+def nosql_tocart(update, context):
+    toProduct = InlineKeyboardMarkup(nosqlbackToProduct)
+    toProductOrCart = InlineKeyboardMarkup(nosqlbackToProductOrCart)
     if (len(context.args) != 2):
-        update.message.reply_text("Invalid commands!" + "\n" + "Syntax: /tocart [Product ID] [Quantity]")
+        update.message.reply_text("Invalid commands!" + "\n" + "Syntax: /nosql_tocart [Product ID] [Quantity]", reply_markup=toProduct)
     else:
         # Setup connection to "ICT2103_Group32.db"
         con = sqlite3.connect('ICT2103_Group32.db')
         cur = con.cursor()
         cur.execute("SELECT productID, inStock, productPrice, promotion, productName from Products WHERE productID=" + context.args[0])
         productInfo = cur.fetchall()
-        if (len(productInfo) == 1):
+        if ((len(productInfo) == 1) and (int(context.args[1]) > 0)):
             # Product exists in the database
             quantityAmount = ((productInfo[0][2] * (1 - (productInfo[0][3] / 100))) * int(context.args[1]))
 
@@ -26,17 +45,17 @@ def tocart(update, context):
                 if (data is not None):
                     # A shopping cart exists
                     # Check if the shopping cart is completed or abandoned
-                    cur.execute("SELECT cc.cartID, ac.cartID FROM Completed_Cart cc, Abandoned_Cart ac WHERE cc.cartID=" + str(data[0]) + " OR ac.cartID = " + str(data[0]))
-                    ccac = cur.fetchall()
+                    cur.execute("SELECT cartID FROM Completed_Cart WHERE cartID=" + str(data[0]))
+                    cc = cur.fetchall()
 
-                    if (int(len(ccac)) > 0):
+                    if (int(len(cc)) > 0):
                         # A shopping cart was either completed or abandoned
                         # Need to change customerID to global variable for stored customer ID
                         cur.execute("INSERT INTO Shopping_Cart (customerID, amount, creationDate) VALUES (1," + str(quantityAmount) + "," + datetime.now().strftime("%Y-%d-%m %H:%M:%S") + ")")
                         cur.execute("INSERT INTO Cart_Contents VALUES ((SELECT TOP 1 cartID FROM Shopping_Cart WHERE customerID=1 ORDER BY cartID desc)," + str(productInfo[0][0]) + "," + context.args[1] + ")")
                         con.commit()
                     else:
-                        # Shopping exists, but was not completed or abandoned
+                        # Shopping exists, but was not completed
                         cur.execute("SELECT quantity FROM Cart_Contents WHERE cartID=" + str(data[0]) + " AND productID=" + str(productInfo[0][0]))
                         itemExist = cur.fetchone()
 
@@ -44,7 +63,7 @@ def tocart(update, context):
                             # Item already existed in the Shopping Cart
                             if ((itemExist[0] + int(context.args[1])) > productInfo[0][1]):
                                 update.message.reply_text("Product failed to add into cart\nYou currently have " + str(itemExist[0]) + " " + str(productInfo[0][4]) + 
-                                                            " in your cart\nYou are only allowed to add " + str(int(context.args[1]) - itemExist[0]) + " more to your cart")
+                                                            " in your cart\nYou are only allowed to add " + str(int(context.args[1]) - itemExist[0]) + " more to your cart", reply_markup=toProduct)
                                 con.close()
                                 return
                             else:
@@ -66,13 +85,13 @@ def tocart(update, context):
                     cur.execute("INSERT INTO Cart_Contents VALUES (" + str(lastCartID[0]) + "," + str(productInfo[0][0]) + "," + context.args[1] + ")")
                     con.commit()
             else:
-                update.message.reply_text("Quantity must be lower than in stock")
+                update.message.reply_text("Quantity must be lower than in stock", reply_markup=toProduct)
                 con.close()
                 return
         else:
-            update.message.reply_text("Incorrect Product ID")
+            update.message.reply_text("Incorrect Product ID or Quantity must be more than 0", reply_markup=toProduct)
             con.close()
             return
-        update.message.reply_text(str(productInfo[0][4]) + " has been added to the shopping cart")
+        update.message.reply_text(str(productInfo[0][4]) + " has been added to the shopping cart", reply_markup=toProductOrCart)
         con.close()
     
