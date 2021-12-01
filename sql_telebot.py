@@ -3,7 +3,6 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 import telegram
 import firebase_admin
 from datetime import datetime
-from firebase_admin import db
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ParseMode
 
 # Variable Declaration

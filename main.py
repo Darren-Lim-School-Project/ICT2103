@@ -2,8 +2,9 @@ import sqlite3
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, CallbackContext, commandhandler
 import telegram
 from datetime import datetime
-from firestoredb import db
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from firestoredb import db
+from functools import partial
 
 # SQL
 from sql_telebot import sql_telebot, sql_mainmenu
@@ -145,9 +146,9 @@ def button(update: Update, context: CallbackContext):
 def main():
     # Change TOKEN here
     # YK
-    TOKEN = "1509494665:AAGBFYwXPxGEeIkogksR7CEZlVyqYf9kNBM"
+    #TOKEN = "1509494665:AAGBFYwXPxGEeIkogksR7CEZlVyqYf9kNBM"
     # Darren
-    #TOKEN = "2140713559:AAFunBF0TFdivjUeskd1TLNtKwwfhT_bnIE"
+    TOKEN = "2140713559:AAFunBF0TFdivjUeskd1TLNtKwwfhT_bnIE"
     # Ken
     #TOKEN = "2132985175:AAEMPGwqmVmki5okwnzoonFti0XN5NlT4UA"
 

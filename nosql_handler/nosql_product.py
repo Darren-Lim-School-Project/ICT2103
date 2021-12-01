@@ -1,5 +1,6 @@
 import telegram
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from firestoredb import db
 
 # Import of SQLite 3
 import sqlite3
@@ -27,7 +28,7 @@ def nosql_product(update, context):
     query = update.callback_query
     reply_markup = InlineKeyboardMarkup(nosqlproductkeyboard)  # to change keyboard
 
-    query.edit_message_text("*Product Menu:*" + "\n" +
+    query.edit_message_text("*NoSQL Product Menu:*" + "\n" +
                             "Mickey Mouse and Friends   \- View Mickey Mouse and Friends Category " + "\n" + 
                             "Disney and Pixar           \- View Disney and Pixar Category " + "\n" +
                             "Marvel                     \- View Marvel Category " + "\n" +
@@ -36,116 +37,72 @@ def nosql_product(update, context):
 
 # /mickeymouse command
 def nosql_mickeymouse(update, context):
-    
     reply_markup = InlineKeyboardMarkup(nosqldisplayedProductkeyboard)  # to change keyboard
-    # Setup connection to "ICT2103_Group32.db"
-    con = sqlite3.connect('ICT2103_Group32.db')
-    cur = con.cursor()
-    
     query = update.callback_query
-    cur.execute("SELECT productID, productName, productPrice, promotion, inStock FROM Products WHERE category = 'Mickey Mouse and Friends'")
-    
-    data = cur.fetchall()
+    docs = db.collection(u'Products').document(u'Category').collection(u'Mickey Mouse and Friends').stream()
     stringAppend = ""
-
-    for i in data:
-        if i[3] == 0:
-            print("1")
-            stringAppend = stringAppend + "Product ID: " + str(i[0]) + "\n" + "Name: " + str(i[1]) + "\n" + "Price: SGD$" + str('{:.2f}'.format(i[2])) + "\n" + "Stock: " + str(i[4]) + "\n\n"
+    for doc in docs:
+        toDict = doc.to_dict()
+        if (toDict.get('Promo') == 0):
+            stringAppend = stringAppend + "Product ID: " + str(doc.id) + "\n" + "Name: " + str(toDict.get('Name')) + "\n" + "Price: SGD$" + str('{:.2f}'.format(toDict.get('Price'))) + "\n" + "Stock: " + str(toDict.get('Stock')) + "\n\n"
         else:
-            print("2")
-            stringAppend = stringAppend + "Product ID: " + str(i[0]) + "\n" + "Name: " + str(i[1]) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(i[2]))]) + "\u0336 SGD$" + str('{:.2f}'.format(i[2] * (1 - (i[3] / 100)))) + "\n" + "Stock: " + str(i[4]) + "\n\n"
+            stringAppend = stringAppend + "Product ID: " + str(doc.id) + "\n" + "Name: " + str(toDict.get('Name')) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(toDict.get('Price')))]) + "\u0336 SGD$" + str('{:.2f}'.format(toDict.get('Price') * (1 - (toDict.get('Promo') / 100)))) + "\n" + "Stock: " + str(toDict.get('Stock')) + "\n\n"
+        #print(f'{doc.id} => {doc.to_dict()}')
 
-
-    print(stringAppend)
-    query.edit_message_text("<b>Mickey Mouse Product</b>" + "\n\n" +
+    query.edit_message_text("<b>NoSQL Mickey Mouse and Friends Product</b>" + "\n\n" +
                             stringAppend + "\n" +
                             "To add an item to cart, use" + "\n" + "/nosql_tocart [Product ID] [Quantity]", parse_mode="html", reply_markup=reply_markup)
-    con.close()
 
 # /disney and pixar command
 def nosql_disneyAndPixar(update, context):
-    
     reply_markup = InlineKeyboardMarkup(nosqldisplayedProductkeyboard)  # to change keyboard
-    # Setup connection to "ICT2103_Group32.db"
-    con = sqlite3.connect('ICT2103_Group32.db')
-    cur = con.cursor()
-    
     query = update.callback_query
-    cur.execute("SELECT productID, productName, productPrice, promotion, inStock FROM Products WHERE category = 'Disney and Pixar'")
-    
-    data = cur.fetchall()
+    docs = db.collection(u'Products').document(u'Category').collection(u'Disney and Pixar').stream()
     stringAppend = ""
-
-    for i in data:
-        if i[3] == 0:
-            print("1")
-            stringAppend = stringAppend + "Product ID: " + str(i[0]) + "\n" + "Name: " + str(i[1]) + "\n" + "Price: SGD$" + str('{:.2f}'.format(i[2])) + "\n" + "Stock: " + str(i[4]) + "\n\n"
+    for doc in docs:
+        toDict = doc.to_dict()
+        if (toDict.get('Promo') == 0):
+            stringAppend = stringAppend + "Product ID: " + str(doc.id) + "\n" + "Name: " + str(toDict.get('Name')) + "\n" + "Price: SGD$" + str('{:.2f}'.format(toDict.get('Price'))) + "\n" + "Stock: " + str(toDict.get('Stock')) + "\n\n"
         else:
-            print("2")
-            stringAppend = stringAppend + "Product ID: " + str(i[0]) + "\n" + "Name: " + str(i[1]) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(i[2]))]) + "\u0336 SGD$" + str('{:.2f}'.format(i[2] * (1 - (i[3] / 100)))) + "\n" + "Stock: " + str(i[4]) + "\n\n"
+            stringAppend = stringAppend + "Product ID: " + str(doc.id) + "\n" + "Name: " + str(toDict.get('Name')) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(toDict.get('Price')))]) + "\u0336 SGD$" + str('{:.2f}'.format(toDict.get('Price') * (1 - (toDict.get('Promo') / 100)))) + "\n" + "Stock: " + str(toDict.get('Stock')) + "\n\n"
+        #print(f'{doc.id} => {doc.to_dict()}')
 
-
-    print(stringAppend)
-    query.edit_message_text("<b>Disney and Pixar Product</b>" + "\n\n" +
+    query.edit_message_text("<b>NoSQL Disney and Pixar Product</b>" + "\n\n" +
                             stringAppend + "\n" +
                             "To add an item to cart, use" + "\n" + "/nosql_tocart [Product ID] [Quantity]", parse_mode="html", reply_markup=reply_markup)
-    con.close()
 
 # /marvel command
 def nosql_marvel(update, context):
-    
     reply_markup = InlineKeyboardMarkup(nosqldisplayedProductkeyboard)  # to change keyboard
-    # Setup connection to "ICT2103_Group32.db"
-    con = sqlite3.connect('ICT2103_Group32.db')
-    cur = con.cursor()
-    
     query = update.callback_query
-    cur.execute("SELECT productID, productName, productPrice, promotion, inStock FROM Products WHERE category = 'Marvel'")
-    
-    data = cur.fetchall()
+    docs = db.collection(u'Products').document(u'Category').collection(u'Marvel').stream()
     stringAppend = ""
-
-    for i in data:
-        if i[3] == 0:
-            print("1")
-            stringAppend = stringAppend + "Product ID: " + str(i[0]) + "\n" + "Name: " + str(i[1]) + "\n" + "Price: SGD$" + str('{:.2f}'.format(i[2])) + "\n" + "Stock: " + str(i[4]) + "\n\n"
+    for doc in docs:
+        toDict = doc.to_dict()
+        if (toDict.get('Promo') == 0):
+            stringAppend = stringAppend + "Product ID: " + str(doc.id) + "\n" + "Name: " + str(toDict.get('Name')) + "\n" + "Price: SGD$" + str('{:.2f}'.format(toDict.get('Price'))) + "\n" + "Stock: " + str(toDict.get('Stock')) + "\n\n"
         else:
-            print("2")
-            stringAppend = stringAppend + "Product ID: " + str(i[0]) + "\n" + "Name: " + str(i[1]) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(i[2]))]) + "\u0336 SGD$" + str('{:.2f}'.format(i[2] * (1 - (i[3] / 100)))) + "\n" + "Stock: " + str(i[4]) + "\n\n"
+            stringAppend = stringAppend + "Product ID: " + str(doc.id) + "\n" + "Name: " + str(toDict.get('Name')) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(toDict.get('Price')))]) + "\u0336 SGD$" + str('{:.2f}'.format(toDict.get('Price') * (1 - (toDict.get('Promo') / 100)))) + "\n" + "Stock: " + str(toDict.get('Stock')) + "\n\n"
+        #print(f'{doc.id} => {doc.to_dict()}')
 
-
-    print(stringAppend)
-    query.edit_message_text("<b>Marvel Product</b>" + "\n\n" +
+    query.edit_message_text("<b>NoSQL Marvel Product</b>" + "\n\n" +
                             stringAppend + "\n" +
                             "To add an item to cart, use" + "\n" + "/nosql_tocart [Product ID] [Quantity]", parse_mode="html", reply_markup=reply_markup)
-    con.close()
 
 # /frozen command
 def nosql_frozen(update, context):
-    
     reply_markup = InlineKeyboardMarkup(nosqldisplayedProductkeyboard)  # to change keyboard
-    # Setup connection to "ICT2103_Group32.db"
-    con = sqlite3.connect('ICT2103_Group32.db')
-    cur = con.cursor()
-    
     query = update.callback_query
-    cur.execute("SELECT productID, productName, productPrice, promotion, inStock FROM Products WHERE category = 'Frozen'")
-    
-    data = cur.fetchall()
+    docs = db.collection(u'Products').document(u'Category').collection(u'Frozen').stream()
     stringAppend = ""
-
-    for i in data:
-        if i[3] == 0:
-            print("1")
-            stringAppend = stringAppend + "Product ID: " + str(i[0]) + "\n" + "Name: " + str(i[1]) + "\n" + "Price: SGD$" + str('{:.2f}'.format(i[2])) + "\n" + "Stock: " + str(i[4]) + "\n\n"
+    for doc in docs:
+        toDict = doc.to_dict()
+        if (toDict.get('Promo') == 0):
+            stringAppend = stringAppend + "Product ID: " + str(doc.id) + "\n" + "Name: " + str(toDict.get('Name')) + "\n" + "Price: SGD$" + str('{:.2f}'.format(toDict.get('Price'))) + "\n" + "Stock: " + str(toDict.get('Stock')) + "\n\n"
         else:
-            print("2")
-            stringAppend = stringAppend + "Product ID: " + str(i[0]) + "\n" + "Name: " + str(i[1]) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(i[2]))]) + "\u0336 SGD$" + str('{:.2f}'.format(i[2] * (1 - (i[3] / 100)))) + "\n" + "Stock: " + str(i[4]) + "\n\n"
+            stringAppend = stringAppend + "Product ID: " + str(doc.id) + "\n" + "Name: " + str(toDict.get('Name')) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(toDict.get('Price')))]) + "\u0336 SGD$" + str('{:.2f}'.format(toDict.get('Price') * (1 - (toDict.get('Promo') / 100)))) + "\n" + "Stock: " + str(toDict.get('Stock')) + "\n\n"
+        #print(f'{doc.id} => {doc.to_dict()}')
 
-
-    print(stringAppend)
-    query.edit_message_text("<b>Frozen Product</b>" + "\n\n" +
+    query.edit_message_text("<b>NoSQL Frozen Product</b>" + "\n\n" +
                             stringAppend + "\n" +
                             "To add an item to cart, use" + "\n" + "/nosql_tocart [Product ID] [Quantity]", parse_mode="html", reply_markup=reply_markup)
-    con.close()
