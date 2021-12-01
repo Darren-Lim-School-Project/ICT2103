@@ -3,33 +3,33 @@ import sqlite3
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
 
-helpkeyboard = [
+sqlhelpkeyboard = [
     [
-        InlineKeyboardButton("Profile", callback_data='profile'),
-        InlineKeyboardButton("Product", callback_data='product'),
+        InlineKeyboardButton("Profile", callback_data='sqlprofile'),
+        InlineKeyboardButton("Product", callback_data='sqlproduct'),
     ],
     [
-        InlineKeyboardButton("Cart", callback_data='cart'),
-        InlineKeyboardButton("Checkout", callback_data='checkout'),
+        InlineKeyboardButton("Cart", callback_data='sqlcart'),
+        InlineKeyboardButton("Checkout", callback_data='sqlcheckout'),
     ], [
-        InlineKeyboardButton("Promo", callback_data='promo')
+        InlineKeyboardButton("Promo", callback_data='sqlpromo')
     ],
 ]
 
-profilekeyboard = [
+sqlprofilekeyboard = [
     [
-        InlineKeyboardButton("Update Email Address", callback_data='email'),
-        InlineKeyboardButton("Cart", callback_data='cart'),
+        InlineKeyboardButton("Update Email Address", callback_data='sqlemail'),
+        InlineKeyboardButton("Cart", callback_data='sqlcart'),
     ], [
-        InlineKeyboardButton("Product", callback_data='product'),
-        InlineKeyboardButton("Promo", callback_data='promo'),
+        InlineKeyboardButton("Product", callback_data='sqlproduct'),
+        InlineKeyboardButton("Promo", callback_data='sqlpromo'),
     ], [
-        InlineKeyboardButton("Help", callback_data='help')
+        InlineKeyboardButton("Help", callback_data='sqlhelp')
     ],
 ]
 
 # /profile command
-def profile(update, context, chatid, username):
+def sql_profile(update, context, chatid, username):
     query = update.callback_query
     con = sqlite3.connect('ICT2103_Group32.db')
     cur = con.cursor()
@@ -42,7 +42,7 @@ def profile(update, context, chatid, username):
     if email is None:
         email = "None"
     telegramname = username
-    reply_markup = InlineKeyboardMarkup(profilekeyboard) # to change keyboard
+    reply_markup = InlineKeyboardMarkup(sqlprofilekeyboard) # to change keyboard
 
     query.edit_message_text("*Profile:*" + "\n" +
                               "We will contact you through email if you cannot be reached on Telegram\." + "\n\n" +
@@ -54,15 +54,16 @@ def profile(update, context, chatid, username):
                             
 
 # Get Key ID (Drawing) from reply
-def received_email(update, context, chatid):
+def sql_received_email(update, context, chatid):
     global STATE
+    print("In sql_received_email")
     con = sqlite3.connect('ICT2103_Group32.db')
     cur = con.cursor()
     new_string = ""
     temp_array = []
     counter = 0
     temp_array_to_insert = []
-    reply_markup = InlineKeyboardMarkup(helpkeyboard)
+    reply_markup = InlineKeyboardMarkup(sqlhelpkeyboard)
     email = "'" + str(update.message.text) + "'"
     for i in email:
         temp_array.append(i)
@@ -80,5 +81,4 @@ def received_email(update, context, chatid):
     con.commit()
     update.message.reply_text("*Updated Email*" + "\n" +
                               "Your email has been updated to the following:" + "\n" +
-                              "Email: __" + str(new_string) + "__\n\n", parse_mode='MarkdownV2', reply_markup=reply_markup)  
-    STATE = 0
+                              "Email: __" + str(new_string) + "__\n\n", parse_mode='MarkdownV2', reply_markup=reply_markup)
