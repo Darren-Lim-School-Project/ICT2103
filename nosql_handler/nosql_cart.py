@@ -1,6 +1,7 @@
 import telegram
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime
+from firestoredb import db
 
 # Import of SQLite 3
 import sqlite3
@@ -16,82 +17,63 @@ sqlcartkeyboard = [
 ]
 
 # Show Cart
-def nosql_cart(update, context):
+def nosql_cart(update, context, chatid):
     global totalAmount
     totalAmount = 0
     # Setup connection to "ICT2103_Group32.db"
     con = sqlite3.connect('ICT2103_Group32.db')
     cur = con.cursor()
+    counter = 0
 
     query = update.callback_query
     reply_markup = InlineKeyboardMarkup(sqlcartkeyboard)
+    docs = db.collection(u'Customers').document(str(chatid)).collection(u'Carts').stream()
+    for doc in docs:
+        toDict = doc.to_dict()
+        counter = counter + 1
+    # Check if got cart or not cart
+    # != 0 means got cart
+    if counter != 0:
+        # Check if cart got any product
+        anyProduct = toDict.get('Product')
 
-    # TODO Update customerID when ready
-    cur.execute("SELECT cartID from Shopping_Cart WHERE customerID=1 ORDER BY cartID DESC")
-    data = cur.fetchone()
-    if (data is not None):
-        # A shopping cart exists
-        # Check if the shopping cart is completed or abandoned
-        cur.execute("SELECT cartID FROM Completed_Cart WHERE cartID=" + str(data[0]))
-        ccac = cur.fetchall()
-        if (int(len(ccac)) > 0):
-            # A shopping cart was either completed or abandoned
-            # So technically cart is new and empty
-            query.edit_message_text("*Cart:*" + "\n" +
-                            "You have no items in your cart\." + "\n" +
-                            "Click on the 'Products' Button to browse products\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
-        else:
-            # Shopping exists, but was not completed or abandoned
-            cur.execute("SELECT * FROM Cart_Contents WHERE cartID=" + str(data[0]))
-            cartItem = cur.fetchall()
-            #Check if shopping cart is empty
-            if (len(cartItem) == 0):
-                # Shopping cart empty
-                query.edit_message_text("*Cart:*" + "\n" +
-                            "You have no items in your cart\." + "\n" +
-                            "Click on the 'Products' Button to browse products\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
-            else:
-                # Shopping Cart not Empty
-                # Get the productID based on cartID to be able to retrieve product details
-                cur.execute("SELECT productID, quantity FROM Cart_Contents WHERE cartID=" + str(data[0]))
-                cartProductID = cur.fetchall()
-                # Create a list to store all the productIDs of the items in cart
-                productIDs = []
-                for i in cartProductID:
-                    if len(i) > 0:
-                        productIDs.append(i[0])
-                # Use variable stringAppend to append product details which is needed to display later
-                stringAppend = ''
-                for i in productIDs:
-                    # SQL statement to get products details based on productID
-                    cur.execute("SELECT productID, productName, productPrice, promotion FROM Products WHERE productID=" + str(i))
-                    productData = cur.fetchone()
-                    # Get quantity of each item in shopping cart
-                    cur.execute("SELECT * FROM Cart_Contents WHERE productID=" + str(i) + " AND cartID=" + str(data[0]))
-                    quantityData = cur.fetchone()
-                    # Check if item is on promo. If not on promo, run the IF statement. If on promo, run the ELSE statement
-                    if productData[3] == 0:
-                        stringAppend = stringAppend + "Product ID: " + str(productData[0]) + "\n" + "Name: " + str(productData[1]) + "\n" + "Price: SGD$" + str('{:.2f}'.format(float(productData[2]))) + "\n" + "Quantity: " + str(quantityData[2]) + "\n\n"
-                        totalAmount = totalAmount + (float(productData[2]) * quantityData[2])
-                    else:
-                        stringAppend = stringAppend + "Product ID: " + str(productData[0]) + "\n" + "Name: " + str(productData[1]) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(productData[2]))]) + "\u0336 " + " SGD$" + str('{:.2f}'.format(productData[2] * (1 - (productData[3] / 100)))) + "\n" + "Quantity: " + str(quantityData[2]) +"\n\n"
-                        totalAmount = totalAmount + (productData[2] * (1 - (productData[3] / 100)) * quantityData[2])
-                
-                # Print out the text needed including the products
-                query.edit_message_text("<b>Cart</b>" + "\n\n" +
+        # If got product
+        if anyProduct is not None:
+            stringAppend = ""
+            totalAmount = 0
+            productList = []
+            # Get all product details
+            docs = db.collection(u'Products').document(u'Category').collections()
+            for doc in docs:
+                for i in doc.stream():
+                    productList.append(i.to_dict())
+            # Store all productID from cart to an array
+            for i in anyProduct:
+                for x in productList:
+                    productListProductid = x.get('Productid')
+                    if int(productListProductid) == int(i.get("ProductID")):
+                        if int(x.get("Promo")) == 0:
+                            stringAppend = stringAppend + "Product ID: " + str(x.get('Productid')) + "\n" + "Name: " + str(x.get('Name')) + "\n" + "Price: SGD$" + str('{:.2f}'.format(x.get('Price'))) + "\n"+ "Quantity: " + str(i.get("Quantity")) + "\n\n"
+                            totalAmount = totalAmount + (float(x.get('Price')) * float(i.get("Quantity")))
+                        else:
+                            stringAppend = stringAppend + "Product ID: " + str(x.get('Productid')) + "\n" + "Name: " + str(x.get('Name')) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(x.get('Price')))]) + "\u0336 SGD$" + str('{:.2f}'.format(x.get('Price') * (1 - (x.get('Promo') / 100)))) + "\n"+ "Quantity: " + str(i.get("Quantity")) + "\n\n"
+                            totalAmount = totalAmount + (float(x.get('Price')) * float(i.get("Quantity")))
+
+            query.edit_message_text("<b>Cart</b>" + "\n\n" +
                                         stringAppend + "" +
                                         "Total Payable: <b>$" + str('{:.2f}'.format(totalAmount)) + "</b>\n\n"
                                         "To delete an item from cart, use" + "\n" + "/nosql_delete [Product ID] [Quantity]" + "\n"
                                         "example: /nosql_delete 1 2", parse_mode="html", reply_markup=reply_markup)
-                # Close DB connection as no longer needed
-                con.close()
+        # If no product
+        else:
+            query.edit_message_text("*Cart:*" + "\n" +
+                            "You have no items in your cart\." + "\n" +
+                            "Click on the 'Products' Button to browse products\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
     else:
-        # A shopping cart does not exist
-        # Does not exist so technically need to prompt them to add products to create new cart
-        # So technically cart is empty
         query.edit_message_text("*Cart:*" + "\n" +
                             "You have no items in your cart\." + "\n" +
                             "Click on the 'Products' Button to browse products\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
+       
 
 def nosql_getTotalAmount():
     return totalAmount
