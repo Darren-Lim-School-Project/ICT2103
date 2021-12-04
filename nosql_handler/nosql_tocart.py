@@ -104,3 +104,6 @@ def nosql_tocart(update, context):
 
     if (incorrectProductID == True):
         update.message.reply_text("Incorrect Product ID or Quantity must be more than 0", reply_markup=toProduct)
+    else:
+        update.message.reply_text(str(productID.get("Name")) + " has been added to the shopping cart", reply_markup=toProductOrCart)
+                
