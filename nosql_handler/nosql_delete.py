@@ -1,6 +1,6 @@
 import telegram
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
-from firestoredb import db
+from firestoredb import db, firestore
 
 # Delete inline keyboard options
 nosqldeletekeyboard = [
@@ -35,7 +35,7 @@ def nosql_delete(update, context):
             productList = []
             # Check if cart got any product
             anyProduct = toDict.get('Product')
-            print("anyProduct: ", anyProduct)
+            print("anyProduct: ", type(anyProduct))
             print("toDict.Products: ",  toDict["Product"][0]["Quantity"])
 
             # If got product
@@ -52,24 +52,30 @@ def nosql_delete(update, context):
                             update.message.reply_text("You are trying to remove more quantity then what you have in cart" + "\n\n" +
                                             "You may want to check the quantity", parse_mode='MarkdownV2', reply_markup=reply_markup)
                         elif int(a.get('Quantity')) == int(context.args[1]):
-                            print("Remove item from cart")
+                            print("[0]:", context.args[0])
+                            print("[1]:", context.args[1])
+                            doc_ref = db.collection(u'Customers').document(str(chatid)).collection(u'Carts').document(str(doc.id))
+                            doc_ref.update({
+                                u'Product': firestore.ArrayRemove([
+                                    {
+                                    u'ProductID' : str(context.args[0]),
+                                    u'Quantity': str(int(a.get('Quantity')))
+                                    }
+                                ])
+                            })
+
+                            # for n in anyProduct:
+                            #     print("N: ", n)
+                            #     if int(n.get("ProductID")) == int(context.args[0]):
+                            #         n.pop("ProductID", context.args[0])
+                            #         n.pop("Quantity", context.args[1])
+                            # print("anyProduct: ", anyProduct)
                         elif int(a.get('Quantity')) > int(context.args[1]):
-                            doc_ref = db.collection(u'Customers').document(str(chatid)).collection(u'Carts').document(u'1')
-                            # for doc_refs in doc_ref:
-                            #     updateDict = doc_refs.to_dict()
+                            doc_ref = db.collection(u'Customers').document(str(chatid)).collection(u'Carts').document(a.id)
                             updatedInt = int(a.get('Quantity')) - int(context.args[1])
                             for x in anyProduct:
                                 if int(x.get("ProductID")) == int(context.args[0]):
-                                    # x['Quantity'] == updatedInt 
-                                    field_updates = {"Quantity":updatedInt}
-                                    doc_ref.update(field_updates)
-
-            # If no product
-        #     else:
-        #         query.edit_message_text("*Cart:*" + "\n" +
-        #                         "You have no items in your cart\." + "\n" +
-        #                         "Click on the 'Products' Button to browse products\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
-        # else:
-        #     query.edit_message_text("*Cart:*" + "\n" +
-        #                         "You have no items in your cart\." + "\n" +
-        #                         "Click on the 'Products' Button to browse products\!", parse_mode='MarkdownV2', reply_markup=reply_markup)
+                                    update = {"Quantity" : updatedInt }
+                                    x.update(update)
+                            field_updates = {"Product": anyProduct}
+                            doc_ref.update(field_updates)
