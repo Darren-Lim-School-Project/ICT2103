@@ -23,7 +23,7 @@ nosqlstartkeyboard = [
 
 # /start command
 def nosql_telebot(update, context):
-    global chatid, username
+    global chatid, username, fname
     does_user_exist_result = 0
     reply_markup = InlineKeyboardMarkup(nosqlstartkeyboard)
     datetime_now = datetime.now()
