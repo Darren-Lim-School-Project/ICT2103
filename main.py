@@ -116,7 +116,7 @@ def button(update: Update, context: CallbackContext):
     elif query.data == "nosqlcart":
         nosql_cart(update, context, chatid)
     elif query.data == "nosqlcheckout":
-        nosql_checkout(update, context, nosql_getTotalAmount())
+        nosql_checkout(update, context, nosql_getTotalAmount(), chatid)
     elif query.data == "nosqlproduct":
         nosql_product(update, context)
     elif query.data == "nosqlpromo":
@@ -148,9 +148,9 @@ def main():
     # YK
     #TOKEN = "1509494665:AAGBFYwXPxGEeIkogksR7CEZlVyqYf9kNBM"
     # Darren
-    # TOKEN = "2140713559:AAFunBF0TFdivjUeskd1TLNtKwwfhT_bnIE"
+    TOKEN = "2140713559:AAFunBF0TFdivjUeskd1TLNtKwwfhT_bnIE"
     # Ken
-    TOKEN = "2132985175:AAEMPGwqmVmki5okwnzoonFti0XN5NlT4UA"
+    #TOKEN = "2132985175:AAEMPGwqmVmki5okwnzoonFti0XN5NlT4UA"
 
     # create the updater, that will automatically create also a dispatcher and a queue to
     # make them dialoge

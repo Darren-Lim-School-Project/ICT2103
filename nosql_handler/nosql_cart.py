@@ -50,14 +50,14 @@ def nosql_cart(update, context, chatid):
                     if int(productListProductid) == int(i.get("ProductID")):
                         if int(x.get("Promo")) == 0:
                             stringAppend = stringAppend + "Product ID: " + str(x.get('Productid')) + "\n" + "Name: " + str(x.get('Name')) + "\n" + "Price: SGD$" + str('{:.2f}'.format(x.get('Price'))) + "\n"+ "Quantity: " + str(i.get("Quantity")) + "\n\n"
-                            totalAmount = totalAmount + (float(x.get('Price')) * float(i.get("Quantity")))
+                            nosqlTotalAmount = nosqlTotalAmount + (float(x.get('Price')) * float(i.get("Quantity")))
                         else:
                             stringAppend = stringAppend + "Product ID: " + str(x.get('Productid')) + "\n" + "Name: " + str(x.get('Name')) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(x.get('Price')))]) + "\u0336 SGD$" + str('{:.2f}'.format(x.get('Price') * (1 - (x.get('Promo') / 100)))) + "\n"+ "Quantity: " + str(i.get("Quantity")) + "\n\n"
-                            totalAmount = totalAmount + (float(x.get('Price')) * float(i.get("Quantity")))
+                            nosqlTotalAmount = nosqlTotalAmount + (float(x.get('Price')) * float(i.get("Quantity")))
 
             query.edit_message_text("<b>Cart</b>" + "\n\n" +
                                         stringAppend + "" +
-                                        "Total Payable: <b>$" + str('{:.2f}'.format(totalAmount)) + "</b>\n\n"
+                                        "Total Payable: <b>$" + str('{:.2f}'.format(nosqlTotalAmount)) + "</b>\n\n"
                                         "To delete an item from cart, use" + "\n" + "/nosql_delete [Product ID] [Quantity]" + "\n"
                                         "example: /nosql_delete 1 2", parse_mode="html", reply_markup=reply_markup)
         # If no product
@@ -72,4 +72,4 @@ def nosql_cart(update, context, chatid):
        
 
 def nosql_getTotalAmount():
-    return totalAmount
+    return nosqlTotalAmount
