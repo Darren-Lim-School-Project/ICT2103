@@ -20,9 +20,6 @@ sqlcartkeyboard = [
 def nosql_cart(update, context, chatid):
     global totalAmount
     totalAmount = 0
-    # Setup connection to "ICT2103_Group32.db"
-    con = sqlite3.connect('ICT2103_Group32.db')
-    cur = con.cursor()
     counter = 0
 
     query = update.callback_query
@@ -40,7 +37,6 @@ def nosql_cart(update, context, chatid):
         # If got product
         if anyProduct is not None:
             stringAppend = ""
-            totalAmount = 0
             productList = []
             # Get all product details
             docs = db.collection(u'Products').document(u'Category').collections()
