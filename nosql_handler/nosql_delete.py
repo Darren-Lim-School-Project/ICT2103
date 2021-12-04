@@ -71,7 +71,7 @@ def nosql_delete(update, context):
                             #         n.pop("Quantity", context.args[1])
                             # print("anyProduct: ", anyProduct)
                         elif int(a.get('Quantity')) > int(context.args[1]):
-                            doc_ref = db.collection(u'Customers').document(str(chatid)).collection(u'Carts').document(a.id)
+                            doc_ref = db.collection(u'Customers').document(str(chatid)).collection(u'Carts').document(str(doc.id))
                             updatedInt = int(a.get('Quantity')) - int(context.args[1])
                             for x in anyProduct:
                                 if int(x.get("ProductID")) == int(context.args[0]):

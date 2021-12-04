@@ -18,8 +18,8 @@ sqlcartkeyboard = [
 
 # Show Cart
 def nosql_cart(update, context, chatid):
-    global totalAmount
-    totalAmount = 0
+    global nosqlTotalAmount
+    nosqlTotalAmount = 0
     counter = 0
 
     query = update.callback_query
