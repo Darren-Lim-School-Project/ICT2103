@@ -23,6 +23,7 @@ def nosql_delete(update, context):
     if (len(context.args) != 2):
         update.message.reply_text("Invalid commands!" + "\n" + "Syntax: /nosql_delete [Product ID] [Quantity]")
     else:
+        productList = []
         chatid = update.message.chat.id
         docs = db.collection(u'Customers').document(str(chatid)).collection(u'Carts').stream()
         for doc in docs:
@@ -30,13 +31,10 @@ def nosql_delete(update, context):
             counter = counter + 1
         # Check if got cart or not cart
         # != 0 means got cart
-        print("toDict: ", toDict)
         if counter != 0:
             productList = []
             # Check if cart got any product
             anyProduct = toDict.get('Product')
-            print("anyProduct: ", type(anyProduct))
-            print("toDict.Products: ",  toDict["Product"][0]["Quantity"])
 
             # If got product
             if anyProduct is not None:
@@ -52,8 +50,6 @@ def nosql_delete(update, context):
                             update.message.reply_text("You are trying to remove more quantity then what you have in cart" + "\n\n" +
                                             "You may want to check the quantity", parse_mode='MarkdownV2', reply_markup=reply_markup)
                         elif int(a.get('Quantity')) == int(context.args[1]):
-                            print("[0]:", context.args[0])
-                            print("[1]:", context.args[1])
                             doc_ref = db.collection(u'Customers').document(str(chatid)).collection(u'Carts').document(str(doc.id))
                             doc_ref.update({
                                 u'Product': firestore.ArrayRemove([
@@ -63,19 +59,29 @@ def nosql_delete(update, context):
                                     }
                                 ])
                             })
+                        # Store all productID from cart to an array
+                            for x in productList:
+                                productListProductid = x.get('Productid')
+                                if int(productListProductid) == int(context.args[0]):
+                                    update.message.reply_text("Removed " + str(context.args[1]) + " " + str(x.get('Name')) + " from shopping cart", reply_markup=reply_markup)
 
-                            # for n in anyProduct:
-                            #     print("N: ", n)
-                            #     if int(n.get("ProductID")) == int(context.args[0]):
-                            #         n.pop("ProductID", context.args[0])
-                            #         n.pop("Quantity", context.args[1])
-                            # print("anyProduct: ", anyProduct)
                         elif int(a.get('Quantity')) > int(context.args[1]):
                             doc_ref = db.collection(u'Customers').document(str(chatid)).collection(u'Carts').document(str(doc.id))
                             updatedInt = int(a.get('Quantity')) - int(context.args[1])
                             for x in anyProduct:
                                 if int(x.get("ProductID")) == int(context.args[0]):
-                                    update = {"Quantity" : updatedInt }
-                                    x.update(update)
+                                    updateQuantity = {"Quantity" : updatedInt }
+                                    x.update(updateQuantity)
                             field_updates = {"Product": anyProduct}
                             doc_ref.update(field_updates)
+                            
+                            docs = db.collection(u'Products').document(u'Category').collections()
+                            for doc in docs:
+                                for i in doc.stream():
+                                    productList.append(i.to_dict())
+                            # Store all productID from cart to an array
+                            for p in productList:
+                                if int(p.get('Productid')) == int(context.args[0]):
+                                    productName = p.get('Name')
+                                    quantity = context.args[1]
+                            update.message.reply_text("Removed " + str(quantity) + " " + str(productName) + " from shopping cart", reply_markup=reply_markup)
