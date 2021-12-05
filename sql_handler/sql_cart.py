@@ -17,7 +17,7 @@ nosqlcartkeyboard = [
 
 # Show Cart
 def sql_cart(update, context):
-    global totalAmount
+    global totalAmount, cartIDToPayment
     totalAmount = 0
     # Setup connection to "ICT2103_Group32.db"
     con = sqlite3.connect('ICT2103_Group32.db')
@@ -77,8 +77,11 @@ def sql_cart(update, context):
                         stringAppend = stringAppend + "Product ID: " + str(productData[0]) + "\n" + "Name: " + str(productData[1]) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(productData[2]))]) + "\u0336 " + " SGD$" + str('{:.2f}'.format(productData[2] * (1 - (productData[3] / 100)))) + "\n" + "Quantity: " + str(quantityData[2]) +"\n\n"
                         totalAmount = totalAmount + (productData[2] * (1 - (productData[3] / 100)) * quantityData[2])
                 
+
+                cartIDToPayment = int(data[0])
+                
                 # Print out the text needed including the products
-                query.edit_message_text("<b>Cart</b>" + "\n\n" +
+                query.edit_message_text("<b>SQL Cart</b>" + "\n\n" +
                                         stringAppend + "" +
                                         "Total Payable: <b>$" + str('{:.2f}'.format(totalAmount)) + "</b>\n\n"
                                         "To delete an item from cart, use" + "\n" + "/sql_delete [Product ID] [Quantity]" + "\n"
@@ -95,3 +98,6 @@ def sql_cart(update, context):
 
 def sql_getTotalAmount():
     return totalAmount
+
+def sql_getCartID():
+    return cartIDToPayment
