@@ -35,7 +35,4 @@ def sql_payment(update, context):
     con.commit()
     con.close()
 
-    # query.edit_message_text("<b>Payment</b>" + "\n\n" +
-    #                         "Please make your payment of <b>$" + str('{:.2f}'.format(totalAmount)) + "</b>" + " to UEN Number: 1234567890" + "\n\n" +
-    #                         "Thank you for your purchase!\n" +
-    #                         "Use /start to start another transaction.", parse_mode="html", reply_markup=reply_markup)
+    update.message.reply_text("<b>SQL Payment</b>" + "\n\n" + "Thank you for shopping with us at MulungShop!\nYou will receive your delivery in 3 days time.", parse_mode="html", reply_markup=reply_markup)
