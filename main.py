@@ -44,7 +44,7 @@ def start(update, context):
     chatid = update.message.chat.id
     fname = update.message.chat.first_name
     username = update.message.chat.username
-    update.message.reply_text("Hello " + username + " , nice to meet you and welcome to ABC shop!\n\nPlease select your choice of database:\n/sql_telebot for SQL Database structure\n/nosql_telebot for NoSQL Database Structure")
+    update.message.reply_text("Hello " + username + " , nice to meet you and welcome to MulungShop shop!\n\nPlease select your choice of database:\n/sql_telebot for SQL Database structure\n/nosql_telebot for NoSQL Database Structure")
 
 # Buttoon for callbackquery on inline button
 def button(update: Update, context: CallbackContext):
@@ -136,8 +136,6 @@ def button(update: Update, context: CallbackContext):
         nosql_frozen(update, context)
     elif query.data == "nosqlback":
         start(update, context)
-    elif query.data == "nosqlcheckoutimg":
-        nosql_payment(update, context, nosql_getTotalAmount())
     elif query.data == "nosqlmainmenu":
         nosql_mainmenu(update, context)
 
@@ -148,9 +146,11 @@ def main():
     # YK
     #TOKEN = "1509494665:AAGBFYwXPxGEeIkogksR7CEZlVyqYf9kNBM"
     # Darren
-    TOKEN = "2140713559:AAFunBF0TFdivjUeskd1TLNtKwwfhT_bnIE"
+    #TOKEN = "2140713559:AAFunBF0TFdivjUeskd1TLNtKwwfhT_bnIE"
     # Ken
     #TOKEN = "2132985175:AAEMPGwqmVmki5okwnzoonFti0XN5NlT4UA"
+
+    TOKEN = "5012213946:AAH8R_gbeqRKpdkSEGQxwYOKMg0ObuxLTpk"
 
     # create the updater, that will automatically create also a dispatcher and a queue to
     # make them dialoge
@@ -168,6 +168,7 @@ def main():
     dispatcher.add_handler(CommandHandler("nosql_telebot", nosql_telebot, pass_args=True))
     dispatcher.add_handler(CommandHandler("sql_delete", sql_delete, pass_args=True))
     dispatcher.add_handler(CommandHandler("nosql_delete", nosql_delete, pass_args=True))
+    dispatcher.add_handler(CommandHandler("nosql_payment", nosql_payment, pass_args=True))
 
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
     dispatcher.add_handler(MessageHandler(Filters.text, text))
