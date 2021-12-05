@@ -55,7 +55,7 @@ def nosql_checkout(update, context, totalAmount, chatid):
         if len(outOfStockItems) == 0:
             query.edit_message_text("<b>NoSQL Checkout</b>" + "\n\n" +
                             "Total Payable: <b>$" + str('{:.2f}'.format(totalAmount)) + "</b>\n\n" +
-                            "To complete Checkout, please insert the following command\n/complete [Postal Code] [Unit Number]\nExample: /nosql_payment 138683 01-01", parse_mode="html", reply_markup=reply_markup1)
+                            "To complete Checkout, please insert the following command\n/nosql_payment [Postal Code] [Unit Number]\nExample: /nosql_payment 138683 01-01", parse_mode="html", reply_markup=reply_markup1)
         else:
             stringAppend = '\n'.join(outOfStockItems)
             query.edit_message_text("<b>NoSQL Checkout</b>" + "\n\n" +

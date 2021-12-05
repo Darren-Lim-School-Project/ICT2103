@@ -63,8 +63,8 @@ def sql_checkout(update, context, totalAmount, cartID):
                             "Total Payable: <b>$" + str('{:.2f}'.format(totalAmount)) + "</b>\n\n" +
                             "Would you like to make payment?" + "\n\n" +
                             "To complete Checkout, please insert the following command" + "\n" + 
-                            "/payment [Cart ID][Postal Code] [Unit Number]" + "\n" +
-                            "Example: /payment 1 530157 04-920", parse_mode="html")
+                            "/sql_payment [Cart ID][Postal Code] [Unit Number]" + "\n" +
+                            "Example: /sql_payment 1 530157 04-920", parse_mode="html")
         # Else there is at least 1 item that does not have enough stock
         # Print out the product names of those that instock is not enough
         else:              
