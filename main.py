@@ -10,7 +10,7 @@ from functools import partial
 from sql_telebot import sql_telebot, sql_mainmenu
 from sql_handler.sql_product import sql_product, sql_mickeymouse, sql_disneyAndPixar, sql_marvel, sql_frozen
 from sql_handler.sql_tocart import sql_tocart
-from sql_handler.sql_cart import sql_cart, sql_getTotalAmount
+from sql_handler.sql_cart import sql_cart, sql_getTotalAmount, sql_getCartID
 from sql_handler.sql_help import sql_help
 from sql_handler.sql_checkout import sql_checkout
 from sql_handler.sql_promo import sql_promo
@@ -86,7 +86,7 @@ def button(update: Update, context: CallbackContext):
     elif query.data == "sqlcart":
         sql_cart(update, context)
     elif query.data == "sqlcheckout":
-        sql_checkout(update, context, sql_getTotalAmount())
+        sql_checkout(update, context, sql_getTotalAmount(), sql_getCartID())
     elif query.data == "sqlproduct":
         sql_product(update, context)
     elif query.data == "sqlpromo":
@@ -107,7 +107,7 @@ def button(update: Update, context: CallbackContext):
     elif query.data == "sqlback":
         start(update, context)
     elif query.data == "sqlcheckoutimg":
-        sql_payment(update, context, sql_getTotalAmount())
+        sql_payment(update, context)
     elif query.data == "sqlmainmenu":
         sql_mainmenu(update, context)
     # NoSQL
@@ -168,6 +168,7 @@ def main():
     dispatcher.add_handler(CommandHandler("nosql_telebot", nosql_telebot, pass_args=True))
     dispatcher.add_handler(CommandHandler("sql_delete", sql_delete, pass_args=True))
     dispatcher.add_handler(CommandHandler("nosql_delete", nosql_delete, pass_args=True))
+    dispatcher.add_handler(CommandHandler("sql_payment", sql_payment, pass_args=True))
     dispatcher.add_handler(CommandHandler("nosql_payment", nosql_payment, pass_args=True))
 
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
