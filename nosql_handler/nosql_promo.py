@@ -1,28 +1,24 @@
-import telegram
+from firestoredb import db, firestore
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-# Import of SQLite 3
-import sqlite3
+nosqlbackToMainMenu = [
+    [
+        InlineKeyboardButton("Main Menu", callback_data='nosqlmainmenu'),
+    ],
+]
 
 # Show current Promo items
 def nosql_promo(update, context):
-    # Setup connection to "ICT2103_Group32.db"
-    con = sqlite3.connect('ICT2103_Group32.db')
-    cur = con.cursor()
-    
+
     query = update.callback_query
-    cur.execute("SELECT productID, productName, productPrice, promotion, inStock FROM Products WHERE promotion>0")
-    print("1")
-    data = cur.fetchall()
-    print("2")
+    toMainMenu = InlineKeyboardMarkup(nosqlbackToMainMenu)
     stringAppend = ""
-
-    print(str(data))
-
-    for i in data:
-        stringAppend = stringAppend + "Product ID: " + str(i[0]) + "\n" + "Name: " + str(i[1]) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(i[2]))]) + "\u0336 SGD$" + str(i[2] * (1 - (i[3] / 100))) + "\n" + "Stock: " + str(i[4]) + "\n\n"
-        #stringAppend = stringAppend + "Product ID: " + str(i[0]) + "\n" + "Name: " + str(i[1]) + "\n" + "Price: SGD$" + str(i[2]) + " SGD$" + str(i[2] * (1 - (i[3] / 100))) + "\n" + "Stock: " + str(i[4]) + "\n\n"
-            
-    query.edit_message_text("<b>Promotion</b>" + "\n\n" +
+    productCategoryCol = db.collection(u'Products').document(u'Category').collections()
+    for productCategory in productCategoryCol:
+        for productInfo in productCategory.stream():
+            if (productInfo.get('Promo') > 0 and productInfo.get('Stock') > 0):
+                stringAppend = stringAppend + "Product ID: " + str(productInfo.id) + "\n" + "Name: " + str(productInfo.get('Name')) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(productInfo.get('Price')))]) + "\u0336 SGD$" + str('{:.2f}'.format(productInfo.get('Price') * (1 - (productInfo.get('Promo') / 100)))) + "\n" + "Stock: " + str(productInfo.get('Stock')) + "\n\n"
+   
+    query.edit_message_text("<b>NoSQL Promotion</b>" + "\n\n" +
                             stringAppend + "\n" +
-                            "To add an item to cart, use" + "\n" + "/nosql_tocart [Product ID] [Quantity]", parse_mode="html")
-    con.close()
+                            "To add an item to cart, use" + "\n" + "/nosql_tocart [Product ID] [Quantity]", parse_mode="html", reply_markup=toMainMenu)
