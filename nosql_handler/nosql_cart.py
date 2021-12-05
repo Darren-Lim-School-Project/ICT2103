@@ -39,27 +39,37 @@ def nosql_cart(update, context, chatid):
             stringAppend = ""
             productList = []
             # Get all product details
+            userCart = db.collection(u'Customers').document(str(chatid)).collection(u'Carts').stream()
             docs = db.collection(u'Products').document(u'Category').collections()
-            for doc in docs:
-                for i in doc.stream():
-                    productList.append(i.to_dict())
-            # Store all productID from cart to an array
-            for i in anyProduct:
-                for x in productList:
-                    productListProductid = x.get('Productid')
-                    if int(productListProductid) == int(i.get("ProductID")):
-                        if int(x.get("Promo")) == 0:
-                            stringAppend = stringAppend + "Product ID: " + str(x.get('Productid')) + "\n" + "Name: " + str(x.get('Name')) + "\n" + "Price: SGD$" + str('{:.2f}'.format(x.get('Price'))) + "\n"+ "Quantity: " + str(i.get("Quantity")) + "\n\n"
-                            nosqlTotalAmount = nosqlTotalAmount + (float(x.get('Price')) * float(i.get("Quantity")))
-                        else:
-                            stringAppend = stringAppend + "Product ID: " + str(x.get('Productid')) + "\n" + "Name: " + str(x.get('Name')) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(x.get('Price')))]) + "\u0336 SGD$" + str('{:.2f}'.format(x.get('Price') * (1 - (x.get('Promo') / 100)))) + "\n"+ "Quantity: " + str(i.get("Quantity")) + "\n\n"
-                            nosqlTotalAmount = nosqlTotalAmount + (float(x.get('Price')) * float(i.get("Quantity")))
+            for cartDetail in userCart:
+                cartDetailToDict = cartDetail.to_dict()
+                if (cartDetailToDict.get('Status') == "Active"):
+                    for doc in docs:
+                        for i in doc.stream():
+                            productList.append(i.to_dict())
+                    for i in anyProduct:
+                        for x in productList:
+                            productListProductid = x.get('Productid')
+                            if int(productListProductid) == int(i.get("ProductID")):
+                                if int(x.get("Promo")) == 0:
+                                    stringAppend = stringAppend + "Product ID: " + str(x.get('Productid')) + "\n" + "Name: " + str(x.get('Name')) + "\n" + "Price: SGD$" + str('{:.2f}'.format(x.get('Price'))) + "\n"+ "Quantity: " + str(i.get("Quantity")) + "\n\n"
+                                    nosqlTotalAmount = nosqlTotalAmount + (float(x.get('Price')) * float(i.get("Quantity")))
+                                else:
+                                    stringAppend = stringAppend + "Product ID: " + str(x.get('Productid')) + "\n" + "Name: " + str(x.get('Name')) + "\n" + "Price: S\u0336G\u0336D\u0336$\u0336" + ''.join([u'\u0336{}'.format(c) for c in str('{:.2f}'.format(x.get('Price')))]) + "\u0336 SGD$" + str('{:.2f}'.format(x.get('Price') * (1 - (x.get('Promo') / 100)))) + "\n"+ "Quantity: " + str(i.get("Quantity")) + "\n\n"
+                                    nosqlTotalAmount = nosqlTotalAmount + (float(x.get('Price')) * float(i.get("Quantity")))
 
-            query.edit_message_text("<b>Cart</b>" + "\n\n" +
-                                        stringAppend + "" +
-                                        "Total Payable: <b>$" + str('{:.2f}'.format(nosqlTotalAmount)) + "</b>\n\n"
-                                        "To delete an item from cart, use" + "\n" + "/nosql_delete [Product ID] [Quantity]" + "\n"
-                                        "example: /nosql_delete 1 2", parse_mode="html", reply_markup=reply_markup)
+                    query.edit_message_text("<b>NoSQL Cart</b>" + "\n\n" +
+                                                stringAppend + "" +
+                                                "Total Payable: <b>$" + str('{:.2f}'.format(nosqlTotalAmount)) + "</b>\n\n"
+                                                "To delete an item from cart, use" + "\n" + "/nosql_delete [Product ID] [Quantity]" + "\n"
+                                                "example: /nosql_delete 1 2", parse_mode="html", reply_markup=reply_markup)
+                else:
+                    query.edit_message_text("<b>NoSQL Cart</b>" + "\n\n" +
+                                                "There is not items in the cart. You may want to view products add them in" + "\n"
+                                                "Total Payable: <b>$" + str('{:.2f}'.format(nosqlTotalAmount)) + "</b>\n\n"
+                                                "To delete an item from cart, use" + "\n" + "/nosql_delete [Product ID] [Quantity]" + "\n"
+                                                "example: /nosql_delete 1 2", parse_mode="html", reply_markup=reply_markup)
+                
         # If no product
         else:
             query.edit_message_text("*Cart:*" + "\n" +
