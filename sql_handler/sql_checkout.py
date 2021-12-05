@@ -54,12 +54,12 @@ def sql_checkout(update, context, totalAmount, cartID):
         
         # Split each element in insufficientQuantityProduct list into new line
         stringAppend = '\n'.join(insufficientQuantityProduct)
-
+        print('cartID: ', cartID)
         # If insufficientQuantityProduct list is empty, means all items have stock, proceed to checkout
         if len(insufficientQuantityProduct) == 0:
             # Print out the text needed including the products
             query.edit_message_text("<b>SQL Checkout</b>" + "\n\n" +
-                                        "Cart ID: " + str(data[0]) +
+                                        "Cart ID: " + str(cartID) + "\n\n" +
                             "Total Payable: <b>$" + str('{:.2f}'.format(totalAmount)) + "</b>\n\n" +
                             "Would you like to make payment?" + "\n\n" +
                             "To complete Checkout, please insert the following command" + "\n" + 
